@@ -1,0 +1,39 @@
+html,p,a,body,h1,h2,h3,span,div,img,input,form {
+    margin:0;
+    padding:0;
+    border:0;
+}
+input {
+    padding: 2px 4px;
+    border:1px solid #CCC;
+    margin:2px 0;
+}
+input[type=text] {
+    width:400px;
+}
+input[type=button] {
+    margin:2px 4px 2px 0;
+}
+form {
+    width:1326px;
+    float:left;
+    border:1px solid #CCC;
+    margin:6px 6px 0 6px;
+    padding:6px;
+}
+.span {
+    display:inline-block;
+    width:400px;
+    overflow:hidden;
+    margin:2px 0;
+}
+.clr { clear:both; }
+.inner {
+    width:1352px;
+    margin:0px auto;
+}
+.console {
+    border:1px solid #CCC;
+    margin:6px 6px 0 6px;
+    padding:6px;
+}
