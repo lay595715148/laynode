@@ -11,10 +11,12 @@ util.inherits(Resource, Action);
 
 Resource.prototype.headers;
 Resource.prototype.content;
-Resource.prototype.init = function(req, res) {
-    Action.prototype.init.call(this, req, res);
+Resource.prototype.init = function() {
+    Action.prototype.init.call(this);
 };
-Resource.prototype.launch = function(req, res) {
+Resource.prototype.launch = function() {
+    var req    = Action.request;
+    var res    = Action.response;
     var oauth2 = this.services["oauth2"];//new OAuth2();
     var parser = url.parse(req.url, true);
     var resource = this;
@@ -25,7 +27,10 @@ Resource.prototype.launch = function(req, res) {
         resource.emit('launch');
     }).verifyAccessToken(parser.query, req, res);
 };
-Resource.prototype.end = function(req, res) {
+Resource.prototype.end = function() {
+    var req    = Action.request;
+    var res    = Action.response;
+
     if('string' != typeof this.content) {
         this.content = JSON.stringify(this.content);
     }

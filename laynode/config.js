@@ -1,7 +1,7 @@
 var config = {
     configs : {
-        "sso":"../example/sso/sso.js",
-        "em":"../example/em/em.js"
+        "sso":"../example/sso/sso.js"//,
+        //"em":"../example/em/em.js"
     },
     actions:{
         "initGenerator.php" : {

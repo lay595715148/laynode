@@ -11,10 +11,12 @@ util.inherits(Token, Action);
 
 Token.prototype.headers;
 Token.prototype.content;
-Token.prototype.init = function(req, res) {
-    Action.prototype.init.call(this, req, res);
+Token.prototype.init = function() {
+    Action.prototype.init.call(this);
 };
-Token.prototype.launch = function(req, res) {
+Token.prototype.launch = function() {
+    var req    = Action.request;
+    var res    = Action.response;
     var oauth2 = this.services["oauth2"];//new OAuth2();
     var parser = url.parse(req.url, true);
     var token = this;
@@ -25,7 +27,10 @@ Token.prototype.launch = function(req, res) {
         token.emit('launch');
     }).grantAccessToken(parser.query, req, res);
 };
-Token.prototype.end = function(req, res) {
+Token.prototype.end = function() {
+    var req    = Action.request;
+    var res    = Action.response;
+
     if('string' != typeof this.content) {
         this.content = JSON.stringify(this.content);
     }

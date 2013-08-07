@@ -1,7 +1,7 @@
 var util        = require('util');
 var Bean        = require('./Bean.js');
 
-var config  = global.config;
+var config  = global._laynode_config;
 var mapping = config.mapping;
 var classes = config.classes;
 var clazzes = config.clazzes;

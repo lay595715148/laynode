@@ -6,7 +6,7 @@ var Service     = require('../core/Service.js');
 var Scope       = require('../util/Scope.js');
 var Base        = require('./Base.js');
 
-var config      = global.config;
+var config      = global._laynode_config;
 var classes     = config['classes'];
 var clazzes     = config['clazzes'];
 
@@ -17,16 +17,21 @@ function Action(actionConfig) {
 
 util.inherits(Action, Base);
 
+
 Action.DISPATCH_KEY = 'key';
-Action.DISPATCH_STYLE = 'do*';
+Action.DISPATCH_STYLE = '*';
+Action.request = undefined;
+Action.response = undefined;
 Action.prototype.config = null;
 Action.prototype.beans = {};
 Action.prototype.services = {};
-Action.prototype.init = function(req, res) {
+Action.prototype.init = function() {
     var actionConfig = this.config;
     var beans = actionConfig['beans'];
     var services = actionConfig['services'];
     var suffix = '../../';
+    var req = Action.request;
+    var res = Action.response;
 
     if('object' == typeof beans || 'array' == typeof beans && beans.length > 0) {//动态加载Bean
         Scope.request = req;
@@ -79,7 +84,7 @@ Action.prototype.init = function(req, res) {
                 beanObj.build.call(beanObj,beanScope);//build
             }
         }
-    }console.log(this.beans);
+    }//console.log(this.beans);
 
     if('object' == typeof services || 'array' == typeof services && services.length > 0) {//动态加载Service
         for(var index in services) {
@@ -130,7 +135,9 @@ Action.prototype.init = function(req, res) {
     }
     this.emit('dispatch');
 };
-Action.prototype.dispatch = function(req, res) {
+Action.prototype.dispatch = function() {
+    var req    = Action.request;
+    var res    = Action.response;
     var parser = url.parse(req.url,true);
     var qs     = parser.query;
     var method = 'launch';
@@ -142,13 +149,13 @@ Action.prototype.dispatch = function(req, res) {
         method = style.replace(/\*/,value.substr(0,1).toUpperCase() + value.substr(1));//Up first word
     }
     if('function' == typeof this[method]) {
-        this[method].call(this, req, res);
+        this[method].call(this);
     } else {
         this.emit('error');
     }
 };
-Action.prototype.launch = function(req, res) { this.emit('launch'); };//implements in child
-Action.prototype.end = function(req, res) { this.emit('end'); };//implements in child
+Action.prototype.launch = function() { this.emit('launch'); };//implements in child
+Action.prototype.end = function() { this.emit('end'); };//implements in child
 
 //module exports
 module.exports = Action;

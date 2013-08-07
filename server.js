@@ -18,6 +18,8 @@ console.log('Server running at http://127.0.0.1:' + port + '/');*/
 //by express
 var app = express();
 app.configure(function() {
+    app.set('views', __dirname + '/template');
+    app.set('view engine', 'jade');
     app.use(express.logger());
     app.use(express.bodyParser());
     app.use(express.methodOverride());

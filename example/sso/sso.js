@@ -37,13 +37,13 @@ var sso = {
     },
     stores:{
         "mysql-sso" : {
-            "auto-connect":true,
+            "auto-connect":false,
             "classname":"Mysql",
             "host":"localhost",
             "port":3306,
-            "user":"root",
-            "password":"dcuxpasswd",
-            "database":"sso",
+            "user":"lay",
+            "password":"123456",
+            "database":"laysoft",
             "encoding":"UTF8",
             "show-sql":true
         }

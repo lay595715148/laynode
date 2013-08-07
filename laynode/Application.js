@@ -2,8 +2,6 @@ var util        = require('util');
 var querystring = require('querystring');
 var url         = require('url');
 var config      = require('./config.js');
-var Base        = require('./core/Base.js');
-//var ldapjs      = require('ldapjs');console.log(ldapjs);
 
 var configs     = config.configs;
 var actions     = config.actions;
@@ -15,13 +13,10 @@ var classes     = config.classes;
 var clazzes     = config.clazzes;
 var instance    = null;
 
-global.config   = config;
+global._laynode_config = config;
 
 function Application() {
-    Base.call(this);
 }
-
-util.inherits(Application, Base);
 
 Application.DELIMITER = '.';
 Application.initialize = function() {
@@ -124,7 +119,7 @@ Application.initialize = function() {
             }
         }
     }
-    //console.log(config.mapping);
+    //console.log(config);
 };
 Application.start = function(req,res) {
     var application = Application.getInstance();
@@ -149,17 +144,20 @@ Application.prototype.run = function(req,res) {
         var path = suffix+ (("undefined" != typeof classes[classname])?classes[classname]:clazzes[classname]);
         var ActionClass = require(path);//加载类
         var actionObj = new ActionClass(actionConfig);
+		var Action = require('./core/Action.js');
 
+        Action.request = req;
+        Action.response = res;
         actionObj.on('init',function() {
             console.log('event init');
-            actionObj.init.call(actionObj,req,res);
+            actionObj.init.call(actionObj);
         }).on('dispatch',function() {
             console.log('event dispatch');
             if('undefined' == typeof actionConfig['auto-dispatch'] || 'boolean' != typeof actionConfig['auto-dispatch']) {
                 actionConfig['auto-dispatch'] = true;
             }
             if(actionConfig['auto-dispatch']) {
-                actionObj.dispatch.call(actionObj, req, res);
+                actionObj.dispatch.call(actionObj);
             } else {
                 actionObj.launch.call(actionObj, req, res);
             }

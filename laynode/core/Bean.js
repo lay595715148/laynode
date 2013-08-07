@@ -6,11 +6,12 @@ function Bean(pros) {
     this.properties = pros;
     if('object' == typeof this.properties) {
         for(var pro in this.properties) {
-            var set = 'set' + pro.substr(0,1).toUpperCase() + pro.substr(1);
-            var get = 'get' + pro.substr(0,1).toUpperCase() + pro.substr(1);
+            var setter = 'set' + pro.substr(0,1).toUpperCase() + pro.substr(1);
+            var getter = 'get' + pro.substr(0,1).toUpperCase() + pro.substr(1);
             var code = '' + 
-                'this.' + set + ' = function(val) { this.properties.' + pro + ' = val; };' + 
-                'this.' + get + ' = function() { return this.properties.' + pro + '; };';
+                'this.' + pro + ' = this.properties.' + pro + ';' + 
+                'this.' + setter + ' = function(val) { this.properties.' + pro + ' = val; };' + 
+                'this.' + getter + ' = function() { return this.properties.' + pro + '; };';
             eval(code);
         }
     }

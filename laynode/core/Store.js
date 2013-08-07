@@ -1,7 +1,7 @@
 var util   = require('util');
 var Base   = require('./Base.js');
 
-var config = global.config;
+var config = global._laynode_config;
 
 function Store(storeConfig) {
     this.config = storeConfig;

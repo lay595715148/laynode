@@ -5,7 +5,7 @@ var Store       = require('../core/Store.js');
 var Condition   = require('../util/Condition.js');
 var Sort        = require('../util/Sort.js');
 
-var config      = global.config;
+var config      = global._laynode_config;
 var mapping     = config.mapping;
  
 function Mysql(storeConfig) {
@@ -27,6 +27,11 @@ Mysql.prototype.query = function(sql,encoding,showsql) {
     var me = this;
     var err,rows,fields;
     var storeConfig = me.config;
+
+    if(!me.link) {
+        this.connect();
+    }
+
     if('string' != typeof sql || !sql || !me.link) {
         me.emit('error',err,rows,fields);
         return false;
@@ -65,7 +70,7 @@ Mysql.prototype.select = function(table,fields,condition,group,order,limit) {
     var me  = this;
     var err,rows,fields;
     var sql = '';
-    if('string' != typeof table || !table || !me.link) {
+    if('string' != typeof table || !table) {
         me.emit('error',err,rows,fields);
         return false;
     }
@@ -106,7 +111,7 @@ Mysql.prototype.count = function(table,condition,group) {
     var err,rows,fields;
     var sql = '';
 
-    if('string' != typeof table || !table || !me.link) {
+    if('string' != typeof table || !table) {
         me.emit('error',err,rows,fields);
         return false;
     }
