@@ -39,6 +39,54 @@ Util.clone = function(obj) {
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
 };
+Util.extend = function(o,n,override) {
+    for(var p in n) {
+        if(n.hasOwnProperty(p) && (!o.hasOwnProperty(p) || override)) o[p]=n[p];
+    }
+	return o;
+};
+Util.json2xml = function(json) {
+    var strXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    if(arguments.length==2) { 
+        strXml= arguments[1];
+    }
+    for(var tag in json) {
+        strXml = strXml.appendFlagBegin(tag);
+        if(json[tag].constructor==Object||json[tag].constructor==Array) {
+            strXml = Util.json2xml(json[tag],strXml);
+        } else if(json[tag].constructor==String) {
+            strXml = strXml.appendText(json[tag]);
+        }
+        strXml = strXml.appendFlagEnd(tag);
+    }
+    return strXml;
+};
+//下面是json转xml使用到的代码
+String.prototype.regulStr = function () {
+    if(this=="")return "";
+    var s=this;
+    var spacial = ["<",">","\"","'","&"];
+    var forma = ["&lt;","&gt;","&quot;","&apos;","&amp;"]
+    for(var i=0;i<spacial.length;i++)
+    {
+        s=s.replace(new RegExp(spacial[i],"g"),forma[i]);
+    }
+    return s;
+};
+
+String.prototype.appendText = function(s) {
+    s = s.regulStr();
+    return s==""?this:this+s+"\n";
+};
+
+
+String.prototype.appendFlagBegin = function(s) {
+    return this+"<"+s+">\n";
+};
+
+String.prototype.appendFlagEnd = function(s) {
+    return this+"</"+s+">\n";
+};
 
 //module exports
 module.exports = Util;

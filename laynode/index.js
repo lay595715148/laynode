@@ -46,99 +46,99 @@ Laynode.config = function(cs) {
         }
     }
 };
-Laynode.action = function(as, pre) {
+Laynode.action = function(as, ns) {
     if('object' == typeof as) {
         for(var p in as) {
-            if('undefined' !=  typeof actions[p] && !pre) {
+            if('undefined' !=  typeof actions[p] && !ns) {
                 actions[prop + Laynode.DELIMITER + p] = as[p];
             } else if('undefined' ==  typeof actions[p]) {
                 actions[p] = as[p];
             }
-            if(pre && 'string' == typeof pre) {
-                actions[pre + Laynode.DELIMITER + p] = as[p];
+            if(ns && 'string' == typeof ns) {
+                actions[ns + Laynode.DELIMITER + p] = as[p];
             }
         }
     }
 };
-Laynode.bean = function(bs, pre) {
+Laynode.bean = function(bs, ns) {
     if('object' == typeof bs) {
         for(var p in bs) {
-            if('undefined' !=  typeof beans[p] && !pre) {
+            if('undefined' !=  typeof beans[p] && !ns) {
                 beans[prop + Laynode.DELIMITER + p] = bs[p];
             } else if('undefined' ==  typeof beans[p]) {
                 beans[p] = bs[p];
             }
-            if(pre && 'string' == typeof pre) {
-                beans[pre + Laynode.DELIMITER + p] = bs[p];
+            if(ns && 'string' == typeof ns) {
+                beans[ns + Laynode.DELIMITER + p] = bs[p];
             }
         }
     }
 };
-Laynode.service = function(ss, pre) {
+Laynode.service = function(ss, ns) {
     if('object' == typeof ss) {
         for(var p in ss) {
-            if('undefined' !=  typeof services[p] && !pre) {
+            if('undefined' !=  typeof services[p] && !ns) {
                 services[prop + Laynode.DELIMITER + p] = ss[p];
             } else if('undefined' ==  typeof services[p]) {
                 services[p] = ss[p];
             }
-            if(pre && 'string' == typeof pre) {
-                services[pre + Laynode.DELIMITER + p] = ss[p];
+            if(ns && 'string' == typeof ns) {
+                services[ns + Laynode.DELIMITER + p] = ss[p];
             }
         }
     }
 };
-Laynode.store = function(ts, pre) {
+Laynode.store = function(ts, ns) {
     if('object' == typeof ts) {
         for(var p in ts) {
-            if('undefined' !=  typeof stores[p] && !pre) {
+            if('undefined' !=  typeof stores[p] && !ns) {
                 stores[prop + Laynode.DELIMITER + p] = ts[p];
             } else if('undefined' ==  typeof stores[p]) {
                 stores[p] = ts[p];
             }
-            if(pre && 'string' == typeof pre) {
-                stores[pre + Laynode.DELIMITER + p] = ts[p];
+            if(ns && 'string' == typeof ns) {
+                stores[ns + Laynode.DELIMITER + p] = ts[p];
             }
         }
     }
 };
-Laynode.mapping = function(ms, pre) {
+Laynode.mapping = function(ms, ns) {
     if('object' == typeof ms) {
         for(var p in ms) {
             if(p === 'tables') {
                 for(var mp in ms[p]) {
-                    if('undefined' != typeof mapping['tables'][mp] && !pre) {
+                    if('undefined' != typeof mapping['tables'][mp] && !ns) {
                         mapping['tables'][prop + Laynode.DELIMITER + mp] = ms[p][mp];
                     } else if('undefined' ==  typeof mapping['tables'][mp]) {
                         mapping['tables'][mp] = ms[p][mp];
                     }
-                    if(pre && 'string' == typeof pre) {
-                        mapping['tables'][pre + Laynode.DELIMITER + mp] = ms[p][mp];
+                    if(ns && 'string' == typeof ns) {
+                        mapping['tables'][ns + Laynode.DELIMITER + mp] = ms[p][mp];
                     }
                 }
             } else {
-                if('undefined' !=  typeof mapping[p] && !pre) {
+                if('undefined' !=  typeof mapping[p] && !ns) {
                     mapping[prop + Laynode.DELIMITER + p] = ms[p];
                 } else if('undefined' ==  typeof mapping[p]) {
                     mapping[p] = ms[p];
                 }
-                if(pre && 'string' == typeof pre) {
-                    mapping[pre + Laynode.DELIMITER + p] = ms[p];
+                if(ns && 'string' == typeof ns) {
+                    mapping[ns + Laynode.DELIMITER + p] = ms[p];
                 }
             }
         }
     }
 };
-Laynode.class = function(cs, pre) {
+Laynode.class = function(cs, ns) {
     if('object' == typeof cs) {
         for(var p in cs) {
-            if('undefined' !=  typeof classes[p] && !pre) {
+            if('undefined' !=  typeof classes[p] && !ns) {
                 classes[prop + Laynode.DELIMITER + p] = cs[p];
             } else if('undefined' ==  typeof classes[p]) {
                 classes[p] = cs[p];
             }
-            if(pre && 'string' == typeof pre) {
-                classes[pre + Laynode.DELIMITER + p] = cs[p];
+            if(ns && 'string' == typeof ns) {
+                classes[ns + Laynode.DELIMITER + p] = cs[p];
             }
         }
     }
@@ -154,21 +154,21 @@ Laynode.initialize = function() {
                 ts   = conf.stores,
                 ms   = conf.mapping,
                 cs   = conf.classes,
-                pre  = conf.prefix;
+                ns   = conf.namespace;
 
-            Laynode.action(as, pre);
-            Laynode.bean(bs, pre);
-            Laynode.service(ss, pre);
-            Laynode.store(ts, pre);
-            Laynode.mapping(ms, pre);
-            Laynode.class(cs, pre);
+            Laynode.action(as, ns);
+            Laynode.bean(bs, ns);
+            Laynode.service(ss, ns);
+            Laynode.store(ts, ns);
+            Laynode.mapping(ms, ns);
+            Laynode.class(cs, ns);
         }
     }
     //console.log(config);
 };
-Laynode.start = function(req,res) {
+Laynode.start = function(req,res,acn) {
     var laynode = Laynode.getInstance();
-        laynode.run(req,res);
+        laynode.run(req,res,acn);
 };
 Laynode.getInstance = function() {
     if(instance == null) {
@@ -177,10 +177,10 @@ Laynode.getInstance = function() {
     return instance;
 };
 
-Laynode.prototype.run = function(req,res) {
+Laynode.prototype.run = function(req,res,acn) {
     var st = new Date().getTime();
     var parser  = url.parse(req.url,true);
-    var actionName = parser.pathname.substr(1);
+    var actionName = ('string' == typeof acn)?acn:parser.pathname.substr(1);
 
     if(actions[actionName] && actions[actionName]['classname']) {
         var actionConfig = actions[actionName];
@@ -188,26 +188,26 @@ Laynode.prototype.run = function(req,res) {
         var path = (("undefined" != typeof classes[classname])?classes[classname]:clazzes[classname]);
         var ActionClass = require((path.indexOf(rootpath) == -1)?(rootpath+path):path);//加载类
         var actionObj = new ActionClass(actionConfig);
-        var Action = require('./core/Action.js');
+        var Action = require(basepath + '/core/Action.js');
 
         Action.request = req;
         Action.response = res;
         actionObj.on('init',function() {
             console.log('event init');
-            actionObj.init.call(actionObj);
-        }).on('dispatch',function() {
-            console.log('event dispatch');
             if('undefined' == typeof actionConfig['auto-dispatch'] || 'boolean' != typeof actionConfig['auto-dispatch']) {
                 actionConfig['auto-dispatch'] = true;
             }
             if(actionConfig['auto-dispatch']) {
                 actionObj.dispatch.call(actionObj);
             } else {
-                actionObj.launch.call(actionObj, req, res);
+                actionObj.launch.call(actionObj);
             }
+        }).on('dispatch',function(method) {
+            console.log('event dispatch');
+            actionObj[method].call(actionObj);
         }).on('launch',function() {
             console.log('event launch');
-            actionObj.end.call(actionObj,req,res);
+            actionObj.end.call(actionObj);
         }).on('end',function() {
             console.log('event end');
             var et = new Date().getTime();
@@ -217,7 +217,7 @@ Laynode.prototype.run = function(req,res) {
             var et = new Date().getTime();
             console.log('Error ==== st: ' + st + ' ---- et: ' + et);
         });
-        actionObj.emit('init');
+        actionObj.init.call(actionObj);
     } else {
         res.end('error');
     }

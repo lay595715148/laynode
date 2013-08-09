@@ -1,7 +1,9 @@
 var util    = require('util');
-var Eventer = require('./Eventer.js');
 
-var config  = global._laynode_config;
+var config   = global._laynode_config;
+var rootpath = global._laynode_rootpath;
+var basepath = global._laynode_basepath;
+var Eventer  = require(basepath + '/core/Eventer.js');
 
 function Store(storeConfig) {
     this.config = storeConfig;

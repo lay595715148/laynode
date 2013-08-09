@@ -1,14 +1,16 @@
 var util        = require('util');
 var querystring = require('querystring');
 var url         = require('url');
-var Bean        = require('../core/Bean.js');
-var Service     = require('../core/Service.js');
-var Template    = require('../core/Template.js');
-var Scope       = require('../util/Scope.js');
-var Eventer     = require('./Eventer.js');
 
 var config      = global._laynode_config;
 var rootpath    = global._laynode_rootpath;
+var basepath    = global._laynode_basepath;
+var Bean        = require('./Bean.js');
+var Service     = require('./Service.js');
+var Template    = require('./Template.js');
+var Scope       = require('../util/Scope.js');
+var Eventer     = require('./Eventer.js');
+
 var classes     = config['classes'];
 var clazzes     = config['clazzes'];
 
@@ -30,9 +32,18 @@ Action.prototype.beans = {};
 Action.prototype.services = {};
 Action.prototype.template = {};
 Action.prototype.init = function() {
+    var req = Action.request;
+    var res = Action.response;
     var actionConfig = this.config;
     var beans = actionConfig['beans'];
     var services = actionConfig['services'];
+
+    this.initBean(beans);
+    this.initService(services);
+    this.initTemplate();
+    this.emit('init');
+};
+Action.prototype.initBean = function(beans) {
     var req = Action.request;
     var res = Action.response;
 
@@ -88,7 +99,8 @@ Action.prototype.init = function() {
             }
         }
     }//console.log(this.beans);
-
+};
+Action.prototype.initService = function(services) {
     if('object' == typeof services || 'array' == typeof services && services.length > 0) {//动态加载Service
         for(var index in services) {
             var servicename = ('object' == typeof services)?services[index]:index;
@@ -136,9 +148,12 @@ Action.prototype.init = function() {
             }
         }
     }
-
+};
+Action.prototype.initTemplate = function() {
+    var req    = Action.request;
+    var res    = Action.response;
     this.template = new Template();
-    this.emit('dispatch');
+	this.template.init.call(this.template,req,res);
 };
 Action.prototype.dispatch = function() {
     var req    = Action.request;
@@ -154,9 +169,9 @@ Action.prototype.dispatch = function() {
         method = style.replace(/\*/,value.substr(0,1).toUpperCase() + value.substr(1));//Up first word
     }
     if('function' == typeof this[method]) {
-        this[method].call(this);
+        this.emit('dispatch',method);
     } else {
-        this.emit('error');
+        this.emit('dispatch','launch');
     }
 };
 Action.prototype.launch = function() { this.emit('launch'); };//implements in child

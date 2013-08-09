@@ -25,4 +25,7 @@ $(document).ready(function() {
             $("#form input[name=change]").prop("value","get");
         }
     });
+    $("#form .line a").click(function() {
+        $(this).parent().remove();
+    });
 });

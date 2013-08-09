@@ -1,5 +1,5 @@
 var sso = {
-    prefix : 'sso',
+    namespace : 'sso',
     display_error : true,
     actions : {
         "authorize" : {
@@ -65,6 +65,7 @@ var sso = {
         'Token' : '/example/sso/classes/Token.js',
         'Resource' : '/example/sso/classes/Resource.js'
     },
+    template_path: '/example/sso/template',
     auth_code_lifetime : 100,
     access_token_lifetime : 1800,
     refresh_token_lifetime : 86400,

@@ -3,6 +3,9 @@ html,p,a,body,h1,h2,h3,span,div,img,input,form {
     padding:0;
     border:0;
 }
+a {
+    cursor:pointer;
+}
 input {
     padding: 2px 4px;
     border:1px solid #CCC;

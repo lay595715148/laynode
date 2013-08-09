@@ -1,4 +1,5 @@
 var basepath = global._laynode_basepath;
+var rootpath = global._laynode_rootpath;
 var config = {
     configs : {
     },
@@ -39,31 +40,9 @@ var config = {
             "classname":"Mysql",
             "host":"localhost",
             "port":3306,
-            "user":"root",
-            "password":"dcuxpasswd",
-            "database":"emconfigdb",
-            "encoding":"UTF8",
-            "show-sql":true
-        },
-        "mysql-conf" : {
-            "auto-connect":true,
-            "classname":"Mysql",
-            "host":"localhost",
-            "port":3306,
-            "user":"root",
-            "password":"dcuxpasswd",
-            "database":"emconfigdb",
-            "encoding":"UTF8",
-            "show-sql":true
-        },
-        "mysql-data" : {
-            "auto-connect":true,
-            "classname":"Mysql",
-            "host":"localhost",
-            "port":3306,
-            "user":"root",
-            "password":"dcuxpasswd",
-            "database":"emdatadb",
+            "user":"lay",
+            "password":"123456",
+            "database":"laysoft",
             "encoding":"UTF8",
             "show-sql":true
         }
@@ -77,17 +56,28 @@ var config = {
 
     //classes ---------------------------------------------------- classes
     classes : {
-        "Paging":"/laynode/util/Paging.js",
-        "Search":"/laynode/util/Search.js",
+		"Action":"/laynode/core/Action.js",
+		"Base":"/laynode/core/Base.js",
+		"Bean":"/laynode/core/Bean.js",
+		"Service":"/laynode/core/Service.js",
+		"Store":"/laynode/core/Store.js",
+		"TBean":"/laynode/core/TBean.js",
+		"Eventer":"/laynode/core/Eventer.js",
+		"Template":"/laynode/core/Template.js",
+        "Ldap":"/laynode/store/Ldap.js",
         "Mysql":"/laynode/store/Mysql.js",
         "MongoDB":"/laynode/store/MongoDB.js",
+        "Cell":"/laynode/util/Cell.js",
+        "Condition":"/laynode/util/Condition.js",
+        "Paging":"/laynode/util/Paging.js",
+        "Scope":"/laynode/util/Scope.js",
+        "Sort":"/laynode/util/Sort.js",
+        "Search":"/laynode/util/Search.js",
+        "Timer":"/laynode/util/Timer.js",
         "Util":"/laynode/util/Util.js",
         "DefaultService":"/laynode/service/DefaultService.js"
     },
-
-    //clazzes ---------------------------------------------------- clazzes
-    clazzes : {
-    }
+    template_path: '/template'
 };
 
 // Module exports;
