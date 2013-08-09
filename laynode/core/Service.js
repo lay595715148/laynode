@@ -1,23 +1,24 @@
-var util    = require('util');
-var Base    = require('./Base.js');
+var util     = require('util');
+var Eventer  = require('./Eventer.js');
 
-var config  = global._laynode_config;
-var classes = config['classes'];
-var clazzes = config['clazzes'];
+var config   = global._laynode_config;
+var rootpath = global._laynode_rootpath;
+var classes  = config['classes'];
+var clazzes  = config['clazzes'];
 
 function Service(serviceConfig) {
     this.config = serviceConfig;
-    Base.call(this);
+    this.setMaxListeners(0);
+    Eventer.call(this);
 }
 
-util.inherits(Service, Base);
+util.inherits(Service, Eventer);
 
 Service.AUTO_INIT = true;
 Service.prototype.config;
 Service.prototype.store;
 Service.prototype.init = function() {
     var serviceConfig = this.config;
-    var suffix = '../../';
 
     var storename = serviceConfig['store'];
     var storeConfig = {};
@@ -31,8 +32,8 @@ Service.prototype.init = function() {
         classname = storeConfig['classname'];
     }
     if(classname) {
-        var path  = suffix + (("undefined" != typeof classes[classname])?classes[classname]:clazzes[classname]);
-        var Store = require(path);
+        var path  = ("undefined" != typeof classes[classname])?classes[classname]:clazzes[classname];
+        var Store = require(( path.indexOf(rootpath) == -1)?(rootpath + path):path );
         storeObj  = new Store(storeConfig);
     }
     if(storeObj) {

@@ -3,7 +3,8 @@ var url    = require('url');
 var jade   = require('jade');
 var fs     = require('fs');
 var Action = require('../../../laynode/core/Action.js');
-var OAuth2 = require('./OAuth2.js');
+//var OAuth2 = require('./OAuth2.js');
+var User   = require('./User.js');
 
 function Authorize(actionConfig) {
     Action.call(this, actionConfig);
@@ -16,7 +17,8 @@ Authorize.prototype.content;
 Authorize.prototype.init = function() {
     Action.prototype.init.call(this);
 };
-Authorize.prototype.launch = function() {
+Authorize.prototype.launch = function() {console.log(global._laynode_rootpath);console.log(global._laynode_basepath);
+    var me     = this;
     var req    = Action.request;
     var res    = Action.response;
     var oauth2 = this.services["oauth2"];//new OAuth2();
@@ -32,14 +34,19 @@ Authorize.prototype.launch = function() {
         params = parser.query;
     }
 
+    var client_id = params.client_id;
+    var redirect_uri = params.redirect_uri;
+    var u1 = new User();u1.set('uid',1);
+    var u2 = new User();u2.set('uid',2);console.log([this.services,u1.toArray(),u2]);
+
+
     oauth2.on('finishClientAuthorization',function(result) {
         authorize.headers = result.headers;console.log('wai');
         authorize.content = '';
         fs.readFile(__dirname + '/../template/authenticate.jade', function (err, data) {
             if (err) console.log( err );
-            console.log('My Data');
-            authorize.content = jade.render(data, {});
-            console.log(data);
+            authorize.content = jade.render(data, {pageTitle:'Authorize',client_id:client_id,redirect_uri:redirect_uri});
+            console.log(me.template);
             authorize.emit('launch');
         });
     }).finishClientAuthorization(params, req, res);

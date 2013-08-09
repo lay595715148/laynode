@@ -3,19 +3,22 @@ var querystring = require('querystring');
 var url         = require('url');
 var Bean        = require('../core/Bean.js');
 var Service     = require('../core/Service.js');
+var Template    = require('../core/Template.js');
 var Scope       = require('../util/Scope.js');
-var Base        = require('./Base.js');
+var Eventer     = require('./Eventer.js');
 
 var config      = global._laynode_config;
+var rootpath    = global._laynode_rootpath;
 var classes     = config['classes'];
 var clazzes     = config['clazzes'];
 
 function Action(actionConfig) {
     this.config = actionConfig;
-    Base.call(this);
+    this.setMaxListeners(0);
+    Eventer.call(this);
 }
 
-util.inherits(Action, Base);
+util.inherits(Action, Eventer);
 
 
 Action.DISPATCH_KEY = 'key';
@@ -25,11 +28,11 @@ Action.response = undefined;
 Action.prototype.config = null;
 Action.prototype.beans = {};
 Action.prototype.services = {};
+Action.prototype.template = {};
 Action.prototype.init = function() {
     var actionConfig = this.config;
     var beans = actionConfig['beans'];
     var services = actionConfig['services'];
-    var suffix = '../../';
     var req = Action.request;
     var res = Action.response;
 
@@ -50,8 +53,8 @@ Action.prototype.init = function() {
                 classname = beanConfig['classname'];
             }
             if(classname) {
-                var path = suffix+ (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
-                var BeanClass = require(path);
+                var path = (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
+                var BeanClass = require((path.indexOf(rootpath) == -1)?(rootpath+path):path);
                 beanObj = new BeanClass();
             }
             if(beanObj) {
@@ -74,8 +77,8 @@ Action.prototype.init = function() {
             classname = beanConfig['classname'];
         }
         if(classname) {
-            var path = suffix+ (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
-            var BeanClass = require(ptah);
+            var path = (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
+            var BeanClass = require((path.indexOf(rootpath) == -1)?(rootpath+path):path);
             beanObj = new BeanClass();
         }
         if(beanObj) {
@@ -99,8 +102,8 @@ Action.prototype.init = function() {
                 classname = serviceConfig['classname'];
             }
             if(classname) {
-                var path = suffix+ (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
-                var ServiceClass = require(path);
+                var path = (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
+                var ServiceClass = require((path.indexOf(rootpath) == -1)?(rootpath+path):path);
                 serviceObj  = new ServiceClass(serviceConfig);
             }
             if(serviceObj) {
@@ -122,8 +125,8 @@ Action.prototype.init = function() {
             classname = serviceConfig['classname'];
         }
         if(classname) {
-            var path = suffix+ (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
-            var ServiceClass = require(path);
+            var path = (('undefined' != typeof classes[classname])?classes[classname]:clazzes[classname]);
+            var ServiceClass = require((path.indexOf(rootpath) == -1)?(rootpath+path):path);
             serviceObj  = new ServiceClass(serviceConfig);
         }
         if(serviceObj) {
@@ -133,6 +136,8 @@ Action.prototype.init = function() {
             }
         }
     }
+
+    this.template = new Template();
     this.emit('dispatch');
 };
 Action.prototype.dispatch = function() {

@@ -1,8 +1,11 @@
 doctype 5
-html(lang="en")
+html
   head
-    title= pageTitle
+    meta(charset='utf-8')
+    title=pageTitle
+    script(src='js/jquery.js')
     script.(type='text/javascript')
+      var foo = false;
       if (foo) {
          bar()
       }
@@ -13,3 +16,8 @@ html(lang="en")
         p You are amazing
       else
         p Get on it!
+        
+      form(name='', action='authorize?client_id=#{client_id}&redirect_uri=#{redirect_uri}')
+        input(type='text', name='username')
+        input(type='password', name='password')
+        input(type='submit', name='submit', value='submit')

@@ -1,5 +1,5 @@
 var sso = {
-    prefix : 'SSO',
+    prefix : 'sso',
     display_error : true,
     actions : {
         "authorize" : {
@@ -59,11 +59,11 @@ var sso = {
         }
     },
     classes : {
-        'User' : './example/sso/classes/User.js',
-        'OAuth2' : './example/sso/classes/OAuth2.js',
-        'Authorize' : './example/sso/classes/Authorize.js',
-        'Token' : './example/sso/classes/Token.js',
-        'Resource' : './example/sso/classes/Resource.js'
+        'User' : '/example/sso/classes/User.js',
+        'OAuth2' : '/example/sso/classes/OAuth2.js',
+        'Authorize' : '/example/sso/classes/Authorize.js',
+        'Token' : '/example/sso/classes/Token.js',
+        'Resource' : '/example/sso/classes/Resource.js'
     },
     auth_code_lifetime : 100,
     access_token_lifetime : 1800,

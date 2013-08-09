@@ -1,11 +1,13 @@
 var util   = require("util");
 var events = require('events');
+var Base   = require('./Base.js');
 
 function Eventer() {
+    Base.call(this);
     events.EventEmitter.call(this);
 }
 
-util.inherits(Base, events.EventEmitter);
+util.inherits(Eventer, events.EventEmitter);
 
 //module exports
-module.exports = Base;
+module.exports = Eventer;

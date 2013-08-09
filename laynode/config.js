@@ -1,7 +1,6 @@
+var basepath = global._laynode_basepath;
 var config = {
     configs : {
-        "sso":"../example/sso/sso.js"//,
-        //"em":"../example/em/em.js"
     },
     actions:{
         "initGenerator.php" : {
@@ -78,12 +77,12 @@ var config = {
 
     //classes ---------------------------------------------------- classes
     classes : {
-        "Paging":"./laynode/util/Paging.js",
-        "Search":"./laynode/util/Search.js",
-        "Mysql":"./laynode/store/Mysql.js",
-        "MongoDB":"./laynode/store/MongoDB.js",
-        "Util":"./laynode/util/Util.js",
-        "DefaultService":"./laynode/service/DefaultService.js"
+        "Paging":"/laynode/util/Paging.js",
+        "Search":"/laynode/util/Search.js",
+        "Mysql":"/laynode/store/Mysql.js",
+        "MongoDB":"/laynode/store/MongoDB.js",
+        "Util":"/laynode/util/Util.js",
+        "DefaultService":"/laynode/service/DefaultService.js"
     },
 
     //clazzes ---------------------------------------------------- clazzes

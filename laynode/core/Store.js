@@ -1,14 +1,15 @@
-var util   = require('util');
-var Base   = require('./Base.js');
+var util    = require('util');
+var Eventer = require('./Eventer.js');
 
-var config = global._laynode_config;
+var config  = global._laynode_config;
 
 function Store(storeConfig) {
     this.config = storeConfig;
-    Base.call(this);
+    this.setMaxListeners(0);
+    Eventer.call(this);
 }
 
-util.inherits(Store, Base);
+util.inherits(Store, Eventer);
 
 Store.AUTO_CONNECT = true;
 Store.prototype.config = null;
