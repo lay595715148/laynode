@@ -1,6 +1,6 @@
 var http    = require('http');
 var express = require('express');
-var laynode = require('./laynode');
+var laynode = require('./lib');
 
 //by http
 /*var port    = 1337;
@@ -33,8 +33,13 @@ app.configure(function() {
     app.use(express.cookieSession({ secret:'laynode',cookie: { maxAge: 60 * 60 * 1000 }}));
     app.use(express.static(__dirname + '/static'));
 });
-app.all(/./,function(req, res) {
-    laynode.start(req, res);
+app.all('/:a/:m',function(req, res) {
+	var action = req.params.a, method = req.params.m;
+    laynode.start(req, res, action, method);
+});
+app.all('/:a',function(req, res) {
+	var action = req.params.a;
+    laynode.start(req, res, action);
 });
 
 app.listen(3000);

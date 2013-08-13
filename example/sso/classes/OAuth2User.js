@@ -4,16 +4,17 @@ var basepath = global._laynode_basepath;
 var rootpath = global._laynode_rootpath;
 var TBean    = require(basepath + '/core/TBean.js');
 
-function User() {
+function OAuth2User() {
     var pros = {
-        'uid' : 0,
+        'id' : 0,
         'username' : '',
-        'isAdmin' : 0
+        'password' : '',
+        'group' : 0
     };
     TBean.call(this, pros);
 }
 
-util.inherits(User, TBean);
+util.inherits(OAuth2User, TBean);
 
 //module exports
-module.exports = User;
+module.exports = OAuth2User;

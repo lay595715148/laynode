@@ -6,19 +6,19 @@ var sso = {
             "classname":"Authorize",
             "auto-dispatch":true,
             "beans":[],
-            "services":["oauth2"]
+            "services":["oauth2","oauth2client","oauth2token","oauth2code","oauth2user"]
         },
         "token" : {
             "classname":"Token",
             "auto-dispatch":true,
             "beans":[],
-            "services":["oauth2"]
+            "services":["oauth2","oauth2client","oauth2token","oauth2code","oauth2user"]
         },
         "resource" : {
             "classname":"Resource",
             "auto-dispatch":true,
             "beans":[],
-            "services":["oauth2"]
+            "services":["oauth2","oauth2client","oauth2token","oauth2user"]
         }
     },
     beans : {
@@ -31,9 +31,29 @@ var sso = {
     services : {
         "oauth2" : {
             "auto-init":true,
-            "classname":"OAuth2",
+            "classname":"OAuth2Service",
             "store":"mysql-sso"
-        }
+        },
+		"oauth2user" : {
+            "auto-init":true,
+            "classname":"OAuth2UserService",
+            "store":"mysql-sso"
+		},
+		"oauth2client" : {
+            "auto-init":true,
+            "classname":"OAuth2ClientService",
+            "store":"mysql-sso"
+		},
+		"oauth2code" : {
+            "auto-init":true,
+            "classname":"OAuth2CodeService",
+            "store":"mysql-sso"
+		},
+		"oauth2token" : {
+            "auto-init":true,
+            "classname":"OAuth2TokenService",
+            "store":"mysql-sso"
+		}
     },
     stores:{
         "mysql-sso" : {
@@ -56,11 +76,24 @@ var sso = {
             "userid" : "uid",
             "username" : "username",
             "isAdmin" : "is_admin"
-        }
+        },
+		'oauth2user' : {
+			'id' : 'id',
+			'username' : 'username',
+			'password' : 'password',
+			'group' : 'group'
+		}
     },
     classes : {
         'User' : '/example/sso/classes/User.js',
-        'OAuth2' : '/example/sso/classes/OAuth2.js',
+		'OAuth2Code' : '/example/sso/classes/OAuth2Code.js',
+		'OAuth2User' : '/example/sso/classes/OAuth2User.js',
+        'OAuth2Service' : '/example/sso/classes/OAuth2Service.js',
+        'OAuth2Client' : '/example/sso/classes/OAuth2Client.js',
+        'OAuth2ClientService' : '/example/sso/classes/OAuth2ClientService.js',
+		'OAuth2CodeService' : '/example/sso/classes/OAuth2CodeService.js',
+		'OAuth2TokenService' : '/example/sso/classes/OAuth2TokenService.js',
+		'OAuth2UserService' : '/example/sso/classes/OAuth2UserService.js',
         'Authorize' : '/example/sso/classes/Authorize.js',
         'Token' : '/example/sso/classes/Token.js',
         'Resource' : '/example/sso/classes/Resource.js'
