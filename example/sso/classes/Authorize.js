@@ -15,13 +15,29 @@ var conf         = require('../sso.js');
 function Authorize(actionConfig) {
     Action.call(this, actionConfig);
 }
-
+/**
+ * <Authorize> inherits <Action>
+ */
 util.inherits(Authorize, Action);
 
+/**
+ * must call parent method ::init(),after ::init() go into method ::dispatch() or ::launch(),
+ * so you can do like this:
+ * {
+ *     Action.prototype.init.call(this);
+ *     this.template.path(conf.template_path);
+ * }
+ */
 Authorize.prototype.init = function() {
     Action.prototype.init.call(this);
     this.template.path(conf.template_path);
 };
+/**
+ * must call parent method ::launch() or emit event 'launch',
+ * if dispatch to other method,you must do it in that method.
+ * 
+ * All of this has no returns,you need push result into {this.template} that is an object of Template.
+ */
 Authorize.prototype.launch = function() {console.log('Authorize launch');
     var me        = this;
     var req       = this.request;
@@ -29,19 +45,19 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
     var parser    = url.parse(req.url, true);
     var oauth2client,client,result,method;
     var params;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {};
+    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req);
     var response_type = parser.query['response_type'] || 'code';
     var outHTML = me.services['oauth2'].checkRequest(req);
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    if(req.method == "POST") {
+    /*if(req.method == "POST") {
         $_GET = req.query;
         $_POST = req.body;
         $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
     } else {
         $_GET = req.query;
         $_REQUEST = $_GET;
-    }
+    }*/
     
     me.services["oauth2client"].on('data',function(data) {
         result = data.result;
@@ -70,6 +86,9 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
         callParent();
     }
 };
+/**
+ * like this which is dispathed from method ::dispatch(),you need call parent method ::launch() or emit event 'launch'.
+ */
 Authorize.prototype.submit = function() {console.log('Authorize submit');
     var me        = this;
     var req       = this.request;

@@ -10,7 +10,7 @@ function OAuth2Client() {
         'clientID' : '',
         'clientName' : '',
         'clientSecret' : '',
-        'clientType' : 0,
+        'clientType' : 1,
         'redirectURI' : '',
         'scope' : '',
         'clientLocation' : '',

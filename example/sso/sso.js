@@ -19,6 +19,12 @@ var sso = {
             "auto-dispatch":true,
             "beans":[],
             "services":["oauth2","oauth2client","oauth2token","oauth2user"]
+        },
+        "show" : {
+            "classname":"Show",
+            "auto-dispatch":true,
+            "beans":[],
+            "services":["show"]
         }
     },
     beans : {
@@ -29,6 +35,11 @@ var sso = {
         }
     },
     services : {
+        "show" : {
+            "auto-init":true,
+            "classname":"ShowService",
+            "store":"mongo-sso"
+        },
         "oauth2" : {
             "auto-init":true,
             "classname":"OAuth2Service",
@@ -66,22 +77,49 @@ var sso = {
             "database":"laysoft",
             "encoding":"UTF8",
             "show-sql":true
+        },
+		"mongo-sso" : {
+            "auto-connect":false,
+            "classname":"MongoDB",
+            //"host":"192.168.159.81",
+			"host":"127.0.0.1",
+            "port":27017,
+            "user":"lay",
+            "password":"123456",
+            "database":"laysoft",
+            "encoding":"UTF8",
+            "show-sql":true
         }
     },
     mapping : {
         'tables' : {
-            'users' : 'users'
+            'users' : 'users',
+			'OAuth2Client' : 'lay_sso_oauth2_client'
         },
         'users' : {
             "userid" : "uid",
             "username" : "username",
             "isAdmin" : "is_admin"
         },
-		'oauth2user' : {
+		'OAuth2User' : {
 			'id' : 'id',
 			'username' : 'username',
 			'password' : 'password',
 			'group' : 'group'
+		},
+		'OAuth2Client' : {
+			'id' : 'id',
+			'clientID' : 'client_id',
+			'clientName' : 'client_name',
+			'clientSecret' : 'client_secret',
+			'clientType' : 'client_type',
+			'redirectURI' : 'redirect_uri',
+			'scope' : 'scope',
+			'clientLocation' : 'client_location',
+			'clientDescription' : 'client_description',
+			'logoURI' : 'logo_uri',
+			'isUsing' : 'is_using',
+			'isDisplay' : 'is_display'
 		}
     },
     classes : {
@@ -96,7 +134,9 @@ var sso = {
 		'OAuth2UserService' : '/example/sso/classes/OAuth2UserService.js',
         'Authorize' : '/example/sso/classes/Authorize.js',
         'Token' : '/example/sso/classes/Token.js',
-        'Resource' : '/example/sso/classes/Resource.js'
+        'Resource' : '/example/sso/classes/Resource.js',
+		'Show' : '/example/sso/classes/Show.js',
+		'ShowService' : '/example/sso/classes/ShowService.js'
     },
     template_path: '/example/sso/template',
     auth_code_lifetime : 100,

@@ -11,6 +11,8 @@ var Sort      = require(basepath + '/util/Sort.js');
 var MD5       = require(basepath + '/util/MD5.js');
 var Util      = require(basepath + '/util/Util.js');
 
+var OAuth2Client = require('./OAuth2Client.js');
+
 function OAuth2ClientService(serviceConfig) {
     Service.call(this,serviceConfig);
 }
@@ -18,8 +20,29 @@ function OAuth2ClientService(serviceConfig) {
 util.inherits(OAuth2ClientService, Service);
 
 OAuth2ClientService.prototype.checkSoftClient = function(client) {
-    console.log('checkSoftClient');
-    this.emit('data',{method:'checkSoftClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+    console.log('checkSoftClient');console.log(client instanceof OAuth2Client);
+	if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftClient',result:false});}
+	var me = this;
+	var ret;
+	var table = client.toTable();
+	var fields = client.toFields();
+	var cidf = client.toField('clientID');
+	var csef = client.toField('clientSecret');
+	var redf = client.toField('redirectURI');
+	var cidv = client.getClientID();
+	var redv = client.getRedirectURI();
+	var cond = {};
+	cond[cidf] = cidv;cond[redf] = redv;console.log(cond);
+	
+		console.log(fields);
+	me.store.on('query',function(rows,fields) {
+		console.log(rows);
+		me.emit('data',{method:'checkSoftClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+	}).on('error',function(err) {
+		console.log(err);
+		me.emit('error',err);
+	});
+	me.store.select(table,fields,cond);
 };
 OAuth2ClientService.prototype.checkClient = function(client) {
     console.log('checkClient');
