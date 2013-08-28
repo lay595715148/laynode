@@ -23,21 +23,15 @@ Show.prototype.launch = function() {
     var oauth2 = this.services["oauth2"];//new OAuth2();
     var parser = url.parse(req.url, true);
     var token,tokenobj,user;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {}, $_SESSION = {};
+    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req), $_SESSION = Util.toSession(req), $_COOKIE = Util.toCookie(req);
     var callParent = function() { Action.prototype.launch.call(me); };
-    
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }
+    //console.log(req.cookies);
+    //res.clearCookie('test');
+    //console.log(req.cookies);
     
     me.services['show'].on('data',function(data) {
         result = data.result;
-        method = data.method;
+        method = data.method;console.log(data);
         if(method === 'find') {
             me.template.push('result',result);
         }
@@ -47,7 +41,7 @@ Show.prototype.launch = function() {
         callParent();
     });
     
-	me.services['show'].find();
+    me.services['show'].find();
 };
 Show.prototype.end = function() {
     var me         = this;

@@ -20,15 +20,15 @@ function ShowService(serviceConfig) {
 util.inherits(ShowService, Service);
 
 ShowService.prototype.find = function(req) {
-	var me = this;
-	
-	me.store.on('find',function(result) {
-		console.log();
-		me.emit('data',{method:'find',result:true});
-	}).on('error',function(err) {
-		me.emit('error',{method:'find',result:false});
-	});
-	me.store.find();
+    var me = this;
+    
+    me.store.on('find',function(result) {
+        console.log();
+        me.emit('data',{method:'find',result:result});
+    }).on('error',function(err) {
+        me.emit('error',{method:'find',result:false});
+    });
+    me.store.find();
 }
 
 //module exports

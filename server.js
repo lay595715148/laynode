@@ -35,10 +35,12 @@ app.configure(function() {
 });
 app.all('/:a/:m',function(req, res) {
 	var action = req.params.a, method = req.params.m;
+    console.log(req.route);
     laynode.start(req, res, action, method);
 });
 app.all('/:a',function(req, res) {
 	var action = req.params.a;
+    console.log(req.route);
     laynode.start(req, res, action);
 });
 

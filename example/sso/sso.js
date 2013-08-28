@@ -25,6 +25,12 @@ var sso = {
             "auto-dispatch":true,
             "beans":[],
             "services":["show"]
+        },
+        "person" : {
+            "classname":"Show",
+            "auto-dispatch":true,
+            "beans":[],
+            "services":["show"]
         }
     },
     beans : {
@@ -45,26 +51,26 @@ var sso = {
             "classname":"OAuth2Service",
             "store":"mysql-sso"
         },
-		"oauth2user" : {
+        "oauth2user" : {
             "auto-init":true,
             "classname":"OAuth2UserService",
             "store":"mysql-sso"
-		},
-		"oauth2client" : {
+        },
+        "oauth2client" : {
             "auto-init":true,
             "classname":"OAuth2ClientService",
             "store":"mysql-sso"
-		},
-		"oauth2code" : {
+        },
+        "oauth2code" : {
             "auto-init":true,
             "classname":"OAuth2CodeService",
             "store":"mysql-sso"
-		},
-		"oauth2token" : {
+        },
+        "oauth2token" : {
             "auto-init":true,
             "classname":"OAuth2TokenService",
             "store":"mysql-sso"
-		}
+        }
     },
     stores:{
         "mysql-sso" : {
@@ -78,11 +84,11 @@ var sso = {
             "encoding":"UTF8",
             "show-sql":true
         },
-		"mongo-sso" : {
+        "mongo-sso" : {
             "auto-connect":false,
             "classname":"MongoDB",
             //"host":"192.168.159.81",
-			"host":"127.0.0.1",
+            "host":"127.0.0.1",
             "port":27017,
             "user":"lay",
             "password":"123456",
@@ -94,49 +100,49 @@ var sso = {
     mapping : {
         'tables' : {
             'users' : 'users',
-			'OAuth2Client' : 'lay_sso_oauth2_client'
+            'OAuth2Client' : 'lay_sso_oauth2_client'
         },
         'users' : {
             "userid" : "uid",
             "username" : "username",
             "isAdmin" : "is_admin"
         },
-		'OAuth2User' : {
-			'id' : 'id',
-			'username' : 'username',
-			'password' : 'password',
-			'group' : 'group'
-		},
-		'OAuth2Client' : {
-			'id' : 'id',
-			'clientID' : 'client_id',
-			'clientName' : 'client_name',
-			'clientSecret' : 'client_secret',
-			'clientType' : 'client_type',
-			'redirectURI' : 'redirect_uri',
-			'scope' : 'scope',
-			'clientLocation' : 'client_location',
-			'clientDescription' : 'client_description',
-			'logoURI' : 'logo_uri',
-			'isUsing' : 'is_using',
-			'isDisplay' : 'is_display'
-		}
+        'OAuth2User' : {
+            'id' : 'id',
+            'username' : 'username',
+            'password' : 'password',
+            'group' : 'group'
+        },
+        'OAuth2Client' : {
+            'id' : 'id',
+            'clientID' : 'client_id',
+            'clientName' : 'client_name',
+            'clientSecret' : 'client_secret',
+            'clientType' : 'client_type',
+            'redirectURI' : 'redirect_uri',
+            'scope' : 'scope',
+            'clientLocation' : 'client_location',
+            'clientDescription' : 'client_description',
+            'logoURI' : 'logo_uri',
+            'isUsing' : 'is_using',
+            'isDisplay' : 'is_display'
+        }
     },
     classes : {
         'User' : '/example/sso/classes/User.js',
-		'OAuth2Code' : '/example/sso/classes/OAuth2Code.js',
-		'OAuth2User' : '/example/sso/classes/OAuth2User.js',
+        'OAuth2Code' : '/example/sso/classes/OAuth2Code.js',
+        'OAuth2User' : '/example/sso/classes/OAuth2User.js',
         'OAuth2Service' : '/example/sso/classes/OAuth2Service.js',
         'OAuth2Client' : '/example/sso/classes/OAuth2Client.js',
         'OAuth2ClientService' : '/example/sso/classes/OAuth2ClientService.js',
-		'OAuth2CodeService' : '/example/sso/classes/OAuth2CodeService.js',
-		'OAuth2TokenService' : '/example/sso/classes/OAuth2TokenService.js',
-		'OAuth2UserService' : '/example/sso/classes/OAuth2UserService.js',
+        'OAuth2CodeService' : '/example/sso/classes/OAuth2CodeService.js',
+        'OAuth2TokenService' : '/example/sso/classes/OAuth2TokenService.js',
+        'OAuth2UserService' : '/example/sso/classes/OAuth2UserService.js',
         'Authorize' : '/example/sso/classes/Authorize.js',
         'Token' : '/example/sso/classes/Token.js',
         'Resource' : '/example/sso/classes/Resource.js',
-		'Show' : '/example/sso/classes/Show.js',
-		'ShowService' : '/example/sso/classes/ShowService.js'
+        'Show' : '/example/sso/classes/Show.js',
+        'ShowService' : '/example/sso/classes/ShowService.js'
     },
     template_path: '/example/sso/template',
     auth_code_lifetime : 100,

@@ -50,15 +50,6 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
     var outHTML = me.services['oauth2'].checkRequest(req);
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    /*if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }*/
-    
     me.services["oauth2client"].on('data',function(data) {
         result = data.result;
         method = data.method;
@@ -97,17 +88,8 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     var oauth2client,client,result,method,user;
     var response_type = parser.query['response_type'] || 'code';
     var params;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {}, $_SESSION = {};
+    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req), $_SESSION = Util.toSession(req);
     var callParent = function() { Action.prototype.launch.call(me); };
-    
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }
     
     me.services['oauth2user'].on('data',function(data) {
         result = data.result;
@@ -135,9 +117,9 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             client = result;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 if(response_type == 'token') {
-                    me.services['oauth2token'].gen(client,$_SESSION['userID'],conf.use_refresh_token);
+                    me.services['oauth2token'].gen(client, $_SESSION['userID'], conf.use_refresh_token);
                 } else {
-                    me.services['oauth2code'].gen(client,$_SESSION['userID']);
+                    me.services['oauth2code'].gen(client, $_SESSION['userID']);
                 }
             } else {
                 me.services['oauth2user'].checkUser($_POST['username'],$_POST['password']);
@@ -151,9 +133,9 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     });
     me.services['oauth2code'].on('data',function(data) {
         result = data.result;
-        method = data.method;
+        method = data.method;console.log(data);
         if(method === 'gen') {
-            var code = result;console.log(code);
+            var code = result;
             me.template.header('Status', 302);
             me.template.header('Location:' + client['redirectURI'] + '?code=' + encodeURIComponent(code));
         }
@@ -214,6 +196,9 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     }
     
 };
+/**
+ * must call parent method ::end() or emit event 'end'
+ */
 Authorize.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
