@@ -20,10 +20,8 @@ function OAuth2TokenService(serviceConfig) {
 util.inherits(OAuth2TokenService, Service);
 
 OAuth2TokenService.prototype.gen = function(client,userid,refresh) {
-	refresh = refresh || false;
-    console.log('gen',this.store);
-	this.store.once('data',function() {
-	});
+    refresh = refresh || false;
+    console.log('gen');
     if(refresh) {
         this.emit('data',{method:'gen',result:[MD5.hex_md5(Util.guid()),MD5.hex_md5(Util.guid())]});
     } else {
@@ -32,12 +30,12 @@ OAuth2TokenService.prototype.gen = function(client,userid,refresh) {
 };
 OAuth2TokenService.prototype.checkSoftToken = function(token,type) {
     console.log('checkSoftToken');
-	type = parseInt(type) || 1;
+    type = parseInt(type) || 1;
     this.emit('data',{method:'checkSoftToken',result:{token:token,userid:1,type:type}});
 };
 OAuth2TokenService.prototype.checkToken = function(token,clientid,type) {
     console.log('checkToken');
-	type = parseInt(type) || 1;
+    type = parseInt(type) || 1;
     this.emit('data',{method:'checkToken',result:{token:token,userid:1,type:type}});
 };
 

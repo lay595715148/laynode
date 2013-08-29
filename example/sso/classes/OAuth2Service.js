@@ -39,17 +39,8 @@ OAuth2Service.TOKEN_TYPE_REFRESH = 2;
 
 OAuth2Service.prototype.result = {headers:[],content:''};
 
-OAuth2Service.prototype.getRequestType = function(req) {
+OAuth2Service.prototype.getRequestType = function($_REQUEST) {
     var request_type,grant_type;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {};
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }
     
     if('undefined' == typeof $_REQUEST['grant_type']) {
         grant_type = OAuth2Service.GRANT_TYPE_AUTHORIZATION_CODE;
@@ -73,21 +64,12 @@ OAuth2Service.prototype.getRequestType = function(req) {
     }
     return request_type;
 }
-OAuth2Service.prototype.checkRequest = function(req,request_type) {
-    
+OAuth2Service.prototype.checkRequest = function($_GET, $_POST, $_REQUEST, request_type) {
     var ret = true;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {};
     
     request_type = request_type || OAuth2Service.REQUEST_TYPE_CODE;
     
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }console.log(request_type);
+    console.log(request_type);
     
     switch(request_type) {
         case OAuth2Service.REQUEST_TYPE_CODE:

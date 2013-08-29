@@ -20,28 +20,27 @@ Show.prototype.launch = function() {
     var me     = this;
     var req    = this.request;
     var res    = this.response;
-    var oauth2 = this.services["oauth2"];//new OAuth2();
     var parser = url.parse(req.url, true);
     var token,tokenobj,user;
-    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req), $_SESSION = Util.toSession(req), $_COOKIE = Util.toCookie(req);
+    var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
     var callParent = function() { Action.prototype.launch.call(me); };
     //console.log(req.cookies);
     //res.clearCookie('test');
     //console.log(req.cookies);
-    
-    me.services['show'].on('data',function(data) {
+    console.log(me.service('show'));
+    me.service('show').on('data',function(data) {
         result = data.result;
         method = data.method;console.log(data);
         if(method === 'find') {
-            me.template.push('result',result);
+            me.template().push('result',result);
         }
         callParent();
     }).on('error',function(err) {
-        me.template.push('error','invalid_userid');
+        me.template().push('error','invalid_userid');
         callParent();
     });
     
-    me.services['show'].find();
+    me.service('show').find();
 };
 Show.prototype.end = function() {
     var me         = this;
@@ -50,7 +49,7 @@ Show.prototype.end = function() {
     var parser     = url.parse(req.url, true);
     var callParent = function() { Action.prototype.end.call(me); };
 
-    me.template.json();
+    me.template().json();
     callParent();
 };
 //module exports

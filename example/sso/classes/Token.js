@@ -26,99 +26,90 @@ Token.prototype.launch = function() {
     var me     = this;
     var req    = this.request;
     var res    = this.response;
-    var parser = url.parse(req.url, true);
+    //var parser = url.parse(req.url, true);
     var oauth2client,client,codeobj,code,oauth2user,user,userid,method,result;
-    var request_type = me.services['oauth2'].getRequestType(req);
-    var outHTML = me.services['oauth2'].checkRequest(req,request_type);
-    var $_GET = {}, $_POST = {}, $_REQUEST = {}, $_SESSION = {};
+    var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
+    var request_type = me.service('oauth2').getRequestType($_REQUEST);
+    var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST, request_type);
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }
-    
-    me.services['oauth2user'].on('data',function(data) {
+    me.service('oauth2user').on('data',function(data) {
         method = data.method;
         user = data.result;
         if(method === 'checkUser') {
             userid = user['id'];
-            me.services['oauth2token'].gen(client,user['id'],conf.use_refresh_token);
+            me.service('oauth2token').gen(client,user['id'],conf.use_refresh_token);
         } else {
             callParent();
         }
     }).on('error',function(err) {
-        me.template.push('error','invalid_gant');
+        me.template().push('error','invalid_gant');
         callParent();
     });
-    me.services['oauth2client'].on('data',function(data) {
+    me.service('oauth2client').on('data',function(data) {
         client = data.result;
         method = data.method;
         if(method === 'checkHardClient') {
             if(code) {
-                me.services['oauth2code'].checkCode(code,client['clientID']);
+                me.service('oauth2code').checkCode(code,client['clientID']);
             } else {
                 oauth2user = new OAuth2User();
                 oauth2user.setUsername($_REQUEST['username']);
                 oauth2user.setPassword($_REQUEST['password']);
-                me.services['oauth2user'].checkUser($_REQUEST['username'], $_REQUEST['password']);
+                me.service('oauth2user').checkUser($_REQUEST['username'], $_REQUEST['password']);
             }
         } else if(method === 'checkSoftHardClient') {
             var refresh_token = $_POST['refresh_token'];
-            me.services['oauth2token'].checkToken(refresh_token,client['clientID'],2);
+            me.service('oauth2token').checkToken(refresh_token,client['clientID'],2);
         } else {
             callParent();
         }
     }).on('error',function(err) {
-        me.template.push('error','invalid_client');
+        me.template().push('error','invalid_client');
         callParent();
     });
-    me.services['oauth2code'].on('data',function(data) {
+    me.service('oauth2code').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'checkCode') {
             codeobj = result;
             userid = codeobj['userid'];
-            me.services['oauth2token'].gen(client,userid,conf.use_refresh_token);
+            me.service('oauth2token').gen(client,userid,conf.use_refresh_token);
         } else {
             callParent();
         }
     }).on('error',function(err) {
-        me.template.push('error','invalid_gant');
+        me.template().push('error','invalid_gant');
         callParent();
     });
-    me.services['oauth2token'].on('data',function(data) {
+    me.service('oauth2token').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'gen') {
             if(conf.use_refresh_token && request_type != 'refresh_token') {
                 var token = result[0];
                 var rtoken = result[1];
-                me.template.push('userid',userid);
-                me.template.push('access_token',token);
-                me.template.push('expires',conf.access_token_lifetime);
-                me.template.push('refresh_token',rtoken);
-                me.template.push('refresh_expires',conf.refresh_token_lifetime);
+                me.template().push('userid',userid);
+                me.template().push('access_token',token);
+                me.template().push('expires',conf.access_token_lifetime);
+                me.template().push('refresh_token',rtoken);
+                me.template().push('refresh_expires',conf.refresh_token_lifetime);
             } else {
                 var token = result;
-                me.template.push('userid',userid);
-                me.template.push('access_token',token);
-                me.template.push('expires',conf.access_token_lifetime);
+                me.template().push('userid',userid);
+                me.template().push('access_token',token);
+                me.template().push('expires',conf.access_token_lifetime);
             }
             callParent();
         } else if(method === 'checkToken') {
             var token = result;
                 userid = token['userid'];
-            me.services['oauth2token'].gen(client,token['userid']);
+            me.service('oauth2token').gen(client,token['userid']);
         } else {
             callParent();
         }
     }).on('error', function(err) {
-        me.template.push('error','invalid_request');
+        me.template().push('error','invalid_request');
         callParent();
     });
     
@@ -130,16 +121,16 @@ Token.prototype.launch = function() {
         if(request_type == 'token') {
             code = $_GET['code'];
             oauth2client.setClientType(1);
-            me.services['oauth2client'].checkHardClient(oauth2client);
+            me.service('oauth2client').checkHardClient(oauth2client);
         } else if(request_type == 'password'){
             oauth2client.setClientType(2);
-            me.services['oauth2client'].checkHardClient(oauth2client);
+            me.service('oauth2client').checkHardClient(oauth2client);
         } else if(request_type == 'refresh_token') {
-            me.services['oauth2client'].checkSoftHardClient(oauth2client);
+            me.service('oauth2client').checkSoftHardClient(oauth2client);
         }
         client = oauth2client.toArray();
     } else {
-        me.template.push('error','invalid_request');
+        me.template().push('error','invalid_request');
         callParent();
     }
 };
@@ -150,7 +141,7 @@ Token.prototype.end = function() {
     var parser     = url.parse(req.url, true);
     var callParent = function() { Action.prototype.end.call(me); };
 
-    me.template.json();
+    me.template().json();
     callParent();
 };
 //module exports

@@ -2,99 +2,106 @@ var sso = {
     namespace : 'sso',
     display_error : true,
     actions : {
-        "authorize" : {
-            "classname":"Authorize",
-            "auto-dispatch":true,
-            "beans":[],
-            "services":["oauth2","oauth2client","oauth2token","oauth2code","oauth2user"]
+        authorize : {
+            'classname':'Authorize',
+            'auto-dispatch':true,
+            'auto-init-template':true,
+            'auto-init-bean':false,
+            'auto-init-service':false,
+            'beans':[],
+            'services':['oauth2','oauth2client','oauth2token','oauth2code','oauth2user']
         },
-        "token" : {
-            "classname":"Token",
-            "auto-dispatch":true,
-            "beans":[],
-            "services":["oauth2","oauth2client","oauth2token","oauth2code","oauth2user"]
+        token : {
+            'classname':'Token',
+            'auto-dispatch':true,
+            'auto-init-template':true,
+            'beans':[],
+            'services':['oauth2','oauth2client','oauth2token','oauth2code','oauth2user']
         },
-        "resource" : {
-            "classname":"Resource",
-            "auto-dispatch":true,
-            "beans":[],
-            "services":["oauth2","oauth2client","oauth2token","oauth2user"]
+        resource : {
+            'classname':'Resource',
+            'auto-dispatch':true,
+            'auto-init-template':true,
+            'beans':[],
+            'services':['oauth2','oauth2client','oauth2token','oauth2user']
         },
-        "show" : {
-            "classname":"Show",
-            "auto-dispatch":true,
-            "beans":[],
-            "services":["show"]
+        show : {
+            'classname':'Show',
+            'auto-dispatch':true,
+            'auto-init-template':true,
+            'beans':[],
+            'services':['show']
         },
-        "person" : {
-            "classname":"Show",
-            "auto-dispatch":true,
-            "beans":[],
-            "services":["show"]
+        person : {
+            'classname':'Show',
+            'auto-dispatch':true,
+            'auto-init-template':true,
+            'beans':[],
+            'services':['show']
         }
     },
     beans : {
-        "user" : {
-            "auto-build":true,
-            "classname": "User",
-            "scope":2
+        'user' : {
+            'auto-build':true,
+            'classname': 'User',
+            'scope':2
         }
     },
     services : {
-        "show" : {
-            "auto-init":true,
-            "classname":"ShowService",
-            "store":"mongo-sso"
+        'show' : {
+            'auto-init':true,
+            'classname':'ShowService',
+            'store':'mongo-sso'
         },
-        "oauth2" : {
-            "auto-init":true,
-            "classname":"OAuth2Service",
-            "store":"mysql-sso"
+        'oauth2' : {
+            'auto-init':true,
+            'classname':'OAuth2Service',
+            'store':'mysql-sso'
         },
-        "oauth2user" : {
-            "auto-init":true,
-            "classname":"OAuth2UserService",
-            "store":"mysql-sso"
+        'oauth2user' : {
+            'auto-init':true,
+            'classname':'OAuth2UserService',
+            'store':'mysql-sso'
         },
-        "oauth2client" : {
-            "auto-init":true,
-            "classname":"OAuth2ClientService",
-            "store":"mysql-sso"
+        'oauth2client' : {
+            'auto-init':true,
+            'classname':'OAuth2ClientService',
+            'store':'mysql-sso'
         },
-        "oauth2code" : {
-            "auto-init":true,
-            "classname":"OAuth2CodeService",
-            "store":"mysql-sso"
+        'oauth2code' : {
+            'auto-init':true,
+            'classname':'OAuth2CodeService',
+            'store':'mysql-sso'
         },
-        "oauth2token" : {
-            "auto-init":true,
-            "classname":"OAuth2TokenService",
-            "store":"mysql-sso"
+        'oauth2token' : {
+            'auto-init':true,
+            'classname':'OAuth2TokenService',
+            'store':'mysql-sso'
         }
     },
     stores:{
-        "mysql-sso" : {
-            "auto-connect":false,
-            "classname":"Mysql",
-            "host":"localhost",
-            "port":3306,
-            "user":"lay",
-            "password":"123456",
-            "database":"laysoft",
-            "encoding":"UTF8",
-            "show-sql":true
+        'mysql-sso' : {
+            'auto-connect':false,
+            'classname':'Mysql',
+            'host':'localhost',
+            'port':3306,
+            'user':'lay',
+            'password':'123456',
+            'database':'laysoft',
+            'encoding':'UTF8',
+            'show-sql':true
         },
-        "mongo-sso" : {
-            "auto-connect":false,
-            "classname":"MongoDB",
-            //"host":"192.168.159.81",
-            "host":"127.0.0.1",
-            "port":27017,
-            "user":"lay",
-            "password":"123456",
-            "database":"laysoft",
-            "encoding":"UTF8",
-            "show-sql":true
+        'mongo-sso' : {
+            'auto-connect':false,
+            'classname':'MongoDB',
+            //'host':'192.168.159.81',
+            'host':'127.0.0.1',
+            'port':27017,
+            'user':'lay',
+            'password':'123456',
+            'database':'laysoft',
+            'encoding':'UTF8',
+            'show-sql':true
         }
     },
     mapping : {
@@ -103,9 +110,9 @@ var sso = {
             'OAuth2Client' : 'lay_sso_oauth2_client'
         },
         'users' : {
-            "userid" : "uid",
-            "username" : "username",
-            "isAdmin" : "is_admin"
+            'userid' : 'uid',
+            'username' : 'username',
+            'isAdmin' : 'is_admin'
         },
         'OAuth2User' : {
             'id' : 'id',

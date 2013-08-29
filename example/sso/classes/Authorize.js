@@ -30,7 +30,7 @@ util.inherits(Authorize, Action);
  */
 Authorize.prototype.init = function() {
     Action.prototype.init.call(this);
-    this.template.path(conf.template_path);
+    this.template().path(conf.template_path);
 };
 /**
  * must call parent method ::launch() or emit event 'launch',
@@ -42,26 +42,25 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
     var me        = this;
     var req       = this.request;
     var res       = this.response;
-    var parser    = url.parse(req.url, true);
+    //var parser    = url.parse(req.url, true);
     var oauth2client,client,result,method;
-    var params;
-    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req);
-    var response_type = parser.query['response_type'] || 'code';
-    var outHTML = me.services['oauth2'].checkRequest(req);
+    var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
+    var response_type = $_REQUEST['response_type'] || 'code';
+    var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST);
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    me.services["oauth2client"].on('data',function(data) {
+    me.service('oauth2client').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'checkSoftClient') {
             client = result;
-            me.template.push({pageTitle:'Authorize',response_type:response_type,client_id:$_GET.client_id,redirect_uri:$_GET.redirect_uri});
-            me.template.css('login.css');
-            me.template.template('/tpl_oauth2_login.jade');
+            me.template().push({pageTitle:'Authorize',response_type:response_type,client_id:$_GET.client_id,redirect_uri:$_GET.redirect_uri});
+            me.template().css('login.css');
+            me.template().template('/tpl_oauth2_login.jade');
         }
         callParent();
     }).on('error',function(err) {
-        me.template.push('error','invalid_client');
+        me.template().push('error','invalid_client');
         callParent();
     });
 
@@ -71,9 +70,9 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
         console.log('outHTML');
         oauth2client.setClientID($_GET['client_id']);
         oauth2client.setRedirectURI($_GET['redirect_uri']);
-        me.services["oauth2client"].checkSoftClient(oauth2client);
+        me.service('oauth2client').checkSoftClient(oauth2client);
     } else {
-        me.template.push('error','invalid_request');
+        me.template().push('error','invalid_request');
         callParent();
     }
 };
@@ -84,14 +83,16 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     var me        = this;
     var req       = this.request;
     var res       = this.response;
-    var parser    = url.parse(req.url, true);
+    //var parser    = url.parse(req.url, true);
     var oauth2client,client,result,method,user;
-    var response_type = parser.query['response_type'] || 'code';
-    var params;
-    var $_GET = Util.toGet(req), $_POST = Util.toPost(req), $_REQUEST = Util.toRequest(req), $_SESSION = Util.toSession(req);
+    var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
+    var response_type = $_REQUEST['response_type'] || 'code';
+    var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST);
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    me.services['oauth2user'].on('data',function(data) {
+    //me.service('oauth2user');
+    
+    me.service('oauth2user').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'checkUser') {
@@ -99,81 +100,81 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             $_SESSION['userID'] = user.id;
             $_SESSION['userName'] = user.username;
             if(response_type == 'token') {
-                me.services['oauth2token'].gen(client,$_SESSION['userID'],conf.use_refresh_token);
+                me.service('oauth2token').gen(client,$_SESSION['userID'],conf.use_refresh_token);
             } else {
-                me.services['oauth2code'].gen(client,$_SESSION['userID']);
+                me.service('oauth2code').gen(client,$_SESSION['userID']);
             }
         } else {
             callParent();
         }
     }).on('error', function(err) {
-        me.template.push('error',err);
+        me.template().push('error',err);
         callParent();
     });
-    me.services['oauth2client'].on('data',function(data) {
+    me.service('oauth2client').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'checkClient') {
             client = result;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 if(response_type == 'token') {
-                    me.services['oauth2token'].gen(client, $_SESSION['userID'], conf.use_refresh_token);
+                    me.service('oauth2token').gen(client, $_SESSION['userID'], conf.use_refresh_token);
                 } else {
-                    me.services['oauth2code'].gen(client, $_SESSION['userID']);
+                    me.service('oauth2code').gen(client, $_SESSION['userID']);
                 }
             } else {
-                me.services['oauth2user'].checkUser($_POST['username'],$_POST['password']);
+                me.service('oauth2user').checkUser($_POST['username'],$_POST['password']);
             }
         } else {
             callParent();
         }
     }).on('error', function(err) {
-        me.template.push('error','invalid_client');
+        me.template().push('error','invalid_client');
         callParent();
     });
-    me.services['oauth2code'].on('data',function(data) {
+    me.service('oauth2code').on('data',function(data) {
         result = data.result;
-        method = data.method;console.log(data);
+        method = data.method;
+        console.log(data);
         if(method === 'gen') {
             var code = result;
-            me.template.header('Status', 302);
-            me.template.header('Location:' + client['redirectURI'] + '?code=' + encodeURIComponent(code));
+            me.template().header('Status', 302);
+            me.template().header('Location:' + client['redirectURI'] + '?code=' + encodeURIComponent(code));
         }
         callParent();
     }).on('error', function(err) {
-        me.template.push('error',err);
+        me.template().push('error',err);
         callParent();
     });
-    me.services['oauth2token'].on('data',function(data) {
+    me.service('oauth2token').on('data',function(data) {
         result = data.result;
         method = data.method;console.log(result);
-        if(method === 'gen') {
+        if(method === 'gen') {console.log('userID',$_SESSION);
             if(conf.use_refresh_token) {
                 var token = result[0];
                 var rtoken = result[1];
-                me.template.push('userid',$_SESSION['userID']);
-                me.template.push('access_token',token);
-                me.template.push('expires',conf.access_token_lifetime);
-                me.template.push('refresh_token',rtoken);
-                me.template.push('refresh_expires',conf.refresh_token_lifetime);
-                me.template.header('Status', 302);
-                me.template.header('Location', client['redirectURI'] + '#token=' + encodeURIComponent(token) + '&expires=' + conf.access_token_lifetime + '&refresh_token=' + encodeURIComponent(rtoken) + '&refresh_expires=' + conf.refresh_token_lifetime);
+                me.template().push('userid',$_SESSION['userID']);
+                me.template().push('access_token',token);
+                me.template().push('expires',conf.access_token_lifetime);
+                me.template().push('refresh_token',rtoken);
+                me.template().push('refresh_expires',conf.refresh_token_lifetime);
+                me.template().header('Status', 302);
+                me.template().header('Location', client['redirectURI'] + '#userid=' + $_SESSION['userID'] + '&token=' + encodeURIComponent(token) + '&expires=' + conf.access_token_lifetime + '&refresh_token=' + encodeURIComponent(rtoken) + '&refresh_expires=' + conf.refresh_token_lifetime);
             } else {
                 var token = result;
-                me.template.push('userid',$_SESSION['userID']);
-                me.template.push('access_token',token);
-                me.template.push('expires',conf.access_token_lifetime);
-                me.template.header('Status', 302);
-                me.template.header('Location', client['redirectURI'] + '#token=' + encodeURIComponent(token) + '&expires=' + conf.access_token_lifetime);
+                me.template().push('userid',$_SESSION['userID']);
+                me.template().push('access_token',token);
+                me.template().push('expires',conf.access_token_lifetime);
+                me.template().header('Status', 302);
+                me.template().header('Location', client['redirectURI'] + '#userid=' + $_SESSION['userID'] + '&token=' + encodeURIComponent(token) + '&expires=' + conf.access_token_lifetime);
             }
         }
         callParent();
     }).on('error', function(err) {
-        me.template.push('error',err);
+        me.template().push('error',err);
         callParent();
     });
     
-    var outHTML = me.services['oauth2'].checkRequest(req);
     if(outHTML) {
         oauth2client = new OAuth2Client();
         oauth2client.setClientID($_GET['client_id']);
@@ -182,16 +183,16 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         client = oauth2client.toArray();
         if('undefined' == typeof $_POST['username'] || 'undefined' == typeof $_POST['password']) {
             if($_SESSION['userID'] && $_SESSION['userName']) {
-                outHTML = me.services['oauth2client'].checkClient(oauth2client);
+                outHTML = me.service('oauth2client').checkClient(oauth2client);
             } else {
-                me.template.push('error','invalid_request');
+                me.template().push('error','invalid_request');
                 callParent();
             }
         } else {
-            outHTML = me.services['oauth2client'].checkClient(oauth2client);
+            outHTML = me.service('oauth2client').checkClient(oauth2client);
         }
     } else {
-        me.template.push('error','invalid_request');
+        me.template().push('error','invalid_request');
         callParent();
     }
     
@@ -202,11 +203,10 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
 Authorize.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
-    var parser     = url.parse(req.url, true);
     var me         = this;
     var callParent = function() { Action.prototype.end.call(me); };
     
-    this.template.display();
+    this.template().display();
     callParent();
 };
 //module exports

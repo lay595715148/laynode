@@ -13,8 +13,6 @@ function Resource(actionConfig) {
 
 util.inherits(Resource, Action);
 
-Resource.prototype.headers;
-Resource.prototype.content;
 Resource.prototype.init = function() {
     Action.prototype.init.call(this);
 };
@@ -22,53 +20,44 @@ Resource.prototype.launch = function() {
     var me     = this;
     var req    = this.request;
     var res    = this.response;
-    var oauth2 = this.services["oauth2"];//new OAuth2();
-    var parser = url.parse(req.url, true);
+    //var oauth2 = this.services["oauth2"];//new OAuth2();
+    //var parser = url.parse(req.url, true);
     var token,tokenobj,user;
-    var $_GET = {}, $_POST = {}, $_REQUEST = {}, $_SESSION = {};
-    var outHTML = me.services['oauth2'].checkRequest(req,'show');
+    var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
+    var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST, 'show');
     var callParent = function() { Action.prototype.launch.call(me); };
     
-    if(req.method == "POST") {
-        $_GET = req.query;
-        $_POST = req.body;
-        $_REQUEST = Util.extend(Util.clone($_GET),Util.clone($_POST));
-    } else {
-        $_GET = req.query;
-        $_REQUEST = $_GET;
-    }
-    
-    me.services['oauth2user'].on('data',function(data) {
+    me.service('oauth2user').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'read') {
             user = result;
-            me.template.push(user);
+            me.template().push(user);
         }
         callParent();
     }).on('error',function(err) {
-        me.template.push('error','invalid_userid');
+        me.template().push('error','invalid_userid');
         callParent();
     });
-    me.services['oauth2token'].on('data',function(data) {
+    me.service('oauth2token').on('data',function(data) {
         result = data.result;
         method = data.method;
         if(method === 'checkSoftToken') {
             tokenobj = result;
-            me.services['oauth2user'].read(tokenobj['userid']);
+            me.service('oauth2user').read(tokenobj['userid']);
         } else {
             callParent();
         }
     }).on('error',function(err) {
-        me.template.push('error','invalid_access_token');
+        me.template().push('error','invalid_access_token');
         callParent();
     });
     
     if(outHTML) {
         token = $_POST['access_token'];
-        me.services['oauth2token'].checkSoftToken(token,1);
+        me.service('oauth2token').checkSoftToken(token,1);
     } else {
-        me.template.push('error','invalid_request');
+        me.template().push('error','invalid_request');
         callParent();
     }
 };
@@ -76,10 +65,10 @@ Resource.prototype.end = function() {
     var me         = this;
     var req        = this.request;
     var res        = this.response;
-    var parser     = url.parse(req.url, true);
+    //var parser     = url.parse(req.url, true);
     var callParent = function() { Action.prototype.end.call(me); };
 
-    me.template.json();
+    me.template().json();
     callParent();
 };
 //module exports

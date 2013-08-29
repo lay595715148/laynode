@@ -18,7 +18,6 @@ app.configure(function() {
     //init laynode Application
     laynode.rootpath(__dirname);
     laynode.config({sso:'/example/sso/sso.js'});
-    laynode.config({em:'/example/em/em.js'});
     laynode.initialize();
 
     app.set('views', __dirname + '/template');
@@ -35,15 +34,15 @@ app.configure(function() {
     app.use(express.static(__dirname + '/static'));
 });
 app.all('/:a/:m',function(req, res) {
-    var action = req.params.a, method = req.params.m;
+	var action = req.params.a, method = req.params.m;
     console.log(req.route);
     laynode.start(req, res, action, method);
 });
 app.all('/:a',function(req, res) {
-    var action = req.params.a;
+	var action = req.params.a;
     console.log(req.route);
     laynode.start(req, res, action);
 });
 
-app.listen(3000);
-console.log('Server running at http://127.0.0.1:' + 3000 + '/');
+app.listen(3100);
+console.log('Server running at http://127.0.0.1:' + 3100 + '/');

@@ -23,7 +23,7 @@ OAuth2UserService.prototype.checkUser = function(username, password) {
     this.emit('data',{method:'checkUser', result:{'id':1, 'username':'student', 'password':'', 'group':1}});
 };
 OAuth2UserService.prototype.read = function(userid) {
-	console.log('read');
+    console.log('read');
     this.emit('data',{method:'read', result:{'id':1, 'username':'student', 'password':'', 'group':1}});
 };
 
