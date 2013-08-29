@@ -12,8 +12,8 @@ $(document).ready(function() {
         $("#form input[name=action]").prop("value","./resource");
     });
     $("#form input[name=logout]").click(function() {
-        $("#form").prop("action","./logout");
-        $("#form input[name=action]").prop("value","./logout");
+        $("#form").prop("action","./authorize/logout");
+        $("#form input[name=action]").prop("value","./authorize/logout");
     });
     $("#form input[name=change]").click(function() {
         var m = $("#form").prop("method");

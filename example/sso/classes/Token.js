@@ -31,7 +31,7 @@ Token.prototype.launch = function() {
     var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
     var request_type = me.service('oauth2').getRequestType($_REQUEST);
     var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST, request_type);
-    var callParent = function() { Action.prototype.launch.call(me); };
+    var callParent = function() { me.emit('launch'); };
     
     me.service('oauth2user').on('data',function(data) {
         method = data.method;
@@ -139,7 +139,7 @@ Token.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
     var parser     = url.parse(req.url, true);
-    var callParent = function() { Action.prototype.end.call(me); };
+    var callParent = function() { console.log('emit','end');me.emit('end'); };
 
     me.template().json();
     callParent();

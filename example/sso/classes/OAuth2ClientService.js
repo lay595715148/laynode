@@ -34,10 +34,13 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
     var cond = {};
     cond[cidf] = cidv;cond[redf] = redv;console.log(cond);
     
-        console.log(fields);
+        //console.log(fields);
     me.store().on('query',function(rows,fields) {
-        console.log(rows);
-        me.emit('data',{method:'checkSoftClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data',{method:'checkSoftClient',result:client.rowToArray(rows[0])});
+        } else {
+            me.emit('error','no correspond client');
+        }
     }).on('error',function(err) {
         console.log(err);
         me.emit('error',err);
@@ -46,15 +49,97 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
 };
 OAuth2ClientService.prototype.checkClient = function(client) {
     console.log('checkClient');
-    this.emit('data',{method:'checkClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+    if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkClient',result:false});}
+    
+    var me = this;
+    var table = client.toTable();
+    var fields = client.toFields();
+    var cidf = client.toField('clientID');
+    var csef = client.toField('clientSecret');
+    var ctyf = client.toField('clientType');
+    var redf = client.toField('redirectURI');
+    var cidv = client.getClientID();
+    var ctyv = client.getClientType();
+    var redv = client.getRedirectURI();
+    var cond = {};
+    cond[cidf] = cidv;cond[ctyf] = ctyv;cond[redf] = redv;//console.log(cond);
+    
+        //console.log(fields);
+    me.store().on('query',function(rows, fields) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data', {method:'checkClient',result:client.rowToArray(rows[0])});
+        } else {
+            me.emit('error', 'no correspond client');
+        }
+    }).on('error', function(err) {
+        console.log(err);
+        me.emit('error', err);
+    });
+    me.store().select(table, fields, cond);
+    
+    //this.emit('data',{method:'checkClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
 };
 OAuth2ClientService.prototype.checkHardClient = function(client) {
     console.log('checkHardClient');
-    this.emit('data',{method:'checkHardClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+    if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkHardClient',result:false});}
+    
+    var me = this;
+    var ret;
+    var table = client.toTable();
+    var fields = client.toFields();
+    var cidf = client.toField('clientID');
+    var csef = client.toField('clientSecret');
+    var ctyf = client.toField('clientType');
+    var redf = client.toField('redirectURI');
+    var cidv = client.getClientID();
+    var csev = client.getClientSecret();
+    var ctyv = client.getClientType();
+    var redv = client.getRedirectURI();
+    var cond = {};
+    cond[cidf] = cidv;cond[csef] = csev;cond[ctyf] = ctyv;cond[redf] = redv;console.log(cond);
+    
+        //console.log(fields);
+    me.store().on('query',function(rows, fields) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data', {method:'checkHardClient', result:client.rowToArray(rows[0])});
+        } else {
+            me.emit('error', 'no correspond client');
+        }
+    }).on('error',function(err) {
+        console.log(err);
+        me.emit('error',err);
+    });
+    me.store().select(table, fields, cond);
 };
 OAuth2ClientService.prototype.checkSoftHardClient = function(client) {
     console.log('checkSoftHardClient');
-    this.emit('data',{method:'checkSoftHardClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
+    if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftHardClient',result:false});}
+    
+    var me = this;
+    var ret;
+    var table = client.toTable();
+    var fields = client.toFields();
+    var cidf = client.toField('clientID');
+    var csef = client.toField('clientSecret');
+    var redf = client.toField('redirectURI');
+    var cidv = client.getClientID();
+    var csev = client.getClientSecret();
+    var redv = client.getRedirectURI();
+    var cond = {};
+    cond[cidf] = cidv;cond[csef] = csev;cond[redf] = redv;console.log(cond);
+    
+        //console.log(fields);
+    me.store().on('query',function(rows, fields) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data', {method:'checkSoftHardClient', result:client.rowToArray(rows[0])});
+        } else {
+            me.emit('error', 'no correspond client');
+        }
+    }).on('error',function(err) {
+        console.log(err);
+        me.emit('error',err);
+    });
+    me.store().select(table, fields, cond);
 };
 
 //module exports

@@ -107,6 +107,7 @@ var sso = {
     mapping : {
         'tables' : {
             'users' : 'users',
+            'OAuth2User' : 'lay_person',
             'OAuth2Client' : 'lay_sso_oauth2_client'
         },
         'users' : {
