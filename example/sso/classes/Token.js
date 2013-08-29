@@ -114,12 +114,12 @@ Token.prototype.launch = function() {
     });
     
     if(outHTML) {
-        oauth2client = new OAuth2Client();
-        oauth2client.setClientID($_GET['client_id']);
-        oauth2client.setClientSecret($_GET['client_secret']);
-        oauth2client.setRedirectURI($_GET['redirect_uri']);
+        oauth2client = new OAuth2Client();console.log();
+        oauth2client.setClientID($_REQUEST['client_id']);
+        oauth2client.setClientSecret($_REQUEST['client_secret']);
+        oauth2client.setRedirectURI($_REQUEST['redirect_uri']);
         if(request_type == 'token') {
-            code = $_GET['code'];
+            code = $_REQUEST['code'];
             oauth2client.setClientType(1);
             me.service('oauth2client').checkHardClient(oauth2client);
         } else if(request_type == 'password'){

@@ -96,7 +96,7 @@ OAuth2ClientService.prototype.checkHardClient = function(client) {
     var ctyv = client.getClientType();
     var redv = client.getRedirectURI();
     var cond = {};
-    cond[cidf] = cidv;cond[csef] = csev;cond[ctyf] = ctyv;cond[redf] = redv;console.log(cond);
+    cond[cidf] = cidv;cond[csef] = csev;cond[ctyf] = ctyv;cond[redf] = redv;console.log(client);
     
         //console.log(fields);
     me.store().on('query',function(rows, fields) {

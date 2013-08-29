@@ -68,7 +68,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
         } else {
             headerError('invalid_client');
         }
-    }).once('error',function(err) {
+    }).on('error',function(err) {
         headerError(err);
     });
 
@@ -119,7 +119,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         } else {
             headerError('invalid_user');
         }
-    }).once('error', function(err) {
+    }).on('error', function(err) {
         console.log(err);
         
         me.template().push({pageTitle:'Authorize',response_type:response_type,client_id:$_GET.client_id,redirect_uri:$_GET.redirect_uri});
@@ -144,7 +144,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         } else {
             headerError('invalid_client');
         }
-    }).once('error', function(err) {
+    }).on('error', function(err) {
         console.log(1);
         headerError(err);
     });
@@ -192,7 +192,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             console.log(5);
             headerError('invalid_token');
         }
-    }).once('error', function(err) {
+    }).on('error', function(err) {
         console.log(3);
         headerError(err);
     });
