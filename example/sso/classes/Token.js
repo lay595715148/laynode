@@ -70,11 +70,11 @@ Token.prototype.launch = function() {
     });
     me.service('oauth2code').on('data',function(data) {
         result = data.result;
-        method = data.method;
+        method = data.method;console.log('after check code',result,client);
         if(method === 'checkCode') {
             codeobj = result;
             userid = codeobj['userid'];
-            me.service('oauth2token').gen(client,userid,conf.use_refresh_token);
+            me.service('oauth2token').gen(client.clientID, userid,conf.use_refresh_token);
         } else {
             callParent();
         }

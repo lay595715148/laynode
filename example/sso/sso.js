@@ -105,9 +105,11 @@ var sso = {
         }
     },
     mapping : {
-        'tables' : {
+        tables : {
             'users' : 'users',
             'OAuth2User' : 'lay_person',
+            'OAuth2Code' : 'lay_sso_oauth2_code',
+            'OAuth2Token' : 'lay_sso_oauth2_token',
             'OAuth2Client' : 'lay_sso_oauth2_client'
         },
         'users' : {
@@ -120,6 +122,22 @@ var sso = {
             'username' : 'username',
             'password' : 'password',
             'group' : 'group'
+        },
+        'OAuth2Code' : {
+            'id' : 'id',
+            'code' : 'code',
+            'clientID' : 'client_id',
+            'redirectURI' : 'redirect_uri',
+            'expires' : 'expires',
+            'userid' : 'userid'
+        },
+        'OAuth2Token' : {
+            'id' : 'id',
+            'token' : 'token',
+            'clientID' : 'client_id',
+            'type' : 'type',
+            'expires' : 'expires',
+            'userid' : 'userid'
         },
         'OAuth2Client' : {
             'id' : 'id',
@@ -139,6 +157,7 @@ var sso = {
     classes : {
         'User' : '/example/sso/classes/User.js',
         'OAuth2Code' : '/example/sso/classes/OAuth2Code.js',
+        'OAuth2Token' : '/example/sso/classes/OAuth2Token.js',
         'OAuth2User' : '/example/sso/classes/OAuth2User.js',
         'OAuth2Service' : '/example/sso/classes/OAuth2Service.js',
         'OAuth2Client' : '/example/sso/classes/OAuth2Client.js',

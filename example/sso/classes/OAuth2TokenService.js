@@ -21,18 +21,30 @@ function OAuth2TokenService(serviceConfig) {
 
 util.inherits(OAuth2TokenService, Service);
 
-OAuth2TokenService.prototype.gen = function(client,userid,refresh) {
+OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
     refresh = refresh || false;
-    console.log('gen token');
+    console.log('gen token', refresh);
     var me = this;
-    var access_token = '';
-    var refresh_token = '';
+    var access_token = false;
+    var refresh_token = false;
     var oauth2token = new OAuth2Token();
     var needAccess = true;
     var accessToken = MD5.hex_md5(Util.guid());
     var refreshToken = MD5.hex_md5(Util.guid());
+    var time = Math.floor(new Date().getTime()/1000);
+    var accessExpires = time + conf.access_token_lifetime;
+    var refreshExpires = time + conf.refresh_token_lifetime;
     
-    me.store().on('query',function(rows, fields) {
+    oauth2token.setToken(accessToken);
+    oauth2token.setClientID(clientID);
+    oauth2token.setType(1);
+    oauth2token.setUserid(userID);
+    oauth2token.setExpires(accessExpires);
+    var table  = oauth2token.toTable();
+    var fields = oauth2token.toInsertFields();
+    var values = oauth2token.toValues();
+    
+    me.store().on('query',function(rows, fs) {
         if(refresh) {
             if(access_token) {
                 refresh_token = refreshToken;
@@ -42,22 +54,29 @@ OAuth2TokenService.prototype.gen = function(client,userid,refresh) {
             if(refresh_token) {
                 me.emit('data',{method:'gen',result:[access_token,refresh_token]});
             } else {
-                me.store().insert(table, fields, values);
+                oauth2token.setToken(refreshToken);
+                oauth2token.setClientID(clientID);
+                oauth2token.setType(2);
+                oauth2token.setUserid(userID);
+                oauth2token.setExpires(refreshExpires);
+                values = oauth2token.toValues();console.log('in oauth2tokenservice');
+                me.store().insert(table, fields, values, false, false);
             }
         } else {
+            access_token = accessToken;
             me.emit('data',{method:'gen',result:[access_token]});
         }
-    }).on('error',function(err) {
-        //me.emit('error',err);
+    }).on('error',function(err) {console.log('error in oauth2tokenservice', err);
+        me.emit('error',err);
     });
     
-    //me.store().insert(table, fields, values);
+    me.store().insert(table, fields, values, false, false);
     
-    if(refresh) {
+    /*if(refresh) {
         this.emit('data',{method:'gen',result:[MD5.hex_md5(Util.guid()),MD5.hex_md5(Util.guid())]});
     } else {
         this.emit('data',{method:'gen',result:MD5.hex_md5(Util.guid())});
-    }
+    }*/
 };
 OAuth2TokenService.prototype.checkSoftToken = function(token,type) {
     console.log('checkSoftToken');

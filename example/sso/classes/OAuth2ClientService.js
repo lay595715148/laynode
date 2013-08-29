@@ -35,7 +35,7 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
     cond[cidf] = cidv;cond[redf] = redv;console.log(cond);
     
         //console.log(fields);
-    me.store().on('query',function(rows,fields) {
+    me.store().on('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data',{method:'checkSoftClient',result:client.rowToArray(rows[0])});
         } else {

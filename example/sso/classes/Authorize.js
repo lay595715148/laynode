@@ -112,9 +112,9 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             $_SESSION['userName'] = user.username;
             $_SESSION['userGroup'] = user.group;
             if(response_type == 'token') {
-                me.service('oauth2token').gen(client,$_SESSION['userID'],conf.use_refresh_token);
+                me.service('oauth2token').gen(client.clientID, $_SESSION['userID'], conf.use_refresh_token);
             } else {
-                me.service('oauth2code').gen(client,$_SESSION['userID']);
+                me.service('oauth2code').gen(client.clientID, client.redirectURI, $_SESSION['userID']);
             }
         } else {
             headerError('invalid_user');
@@ -122,7 +122,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     }).on('error', function(err) {
         console.log(err);
         
-        me.template().push({pageTitle:'Authorize',response_type:response_type,client_id:$_GET.client_id,redirect_uri:$_GET.redirect_uri});
+        me.template().push({'pageTitle':'Authorize', 'response_type':response_type, 'client_id':client.clientID, 'redirect_uri':client.redirectURI});
         me.template().css('login.css');
         me.template().template('/tpl_oauth2_login.jade');
         callParent();
@@ -131,12 +131,12 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         result = data.result;
         method = data.method;console.log(data);
         if(method === 'checkClient') {
-            client = result;console.log('session',$_POST);$_SESSION['userID'] = false;
+            client = result;//console.log('session',$_POST);$_SESSION['userID'] = false;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 if(response_type == 'token') {
-                    me.service('oauth2token').gen(client, $_SESSION['userID'], conf.use_refresh_token);
+                    me.service('oauth2token').gen(client.clientID, $_SESSION['userID'], conf.use_refresh_token);
                 } else {
-                    me.service('oauth2code').gen(client, $_SESSION['userID']);
+                    me.service('oauth2code').gen(client.clientID, client.redirectURI, $_SESSION['userID']);
                 }
             } else {
                 me.service('oauth2user').checkUser($_POST['username'],$_POST['password']);
