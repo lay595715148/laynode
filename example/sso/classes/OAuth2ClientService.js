@@ -20,7 +20,7 @@ function OAuth2ClientService(serviceConfig) {
 util.inherits(OAuth2ClientService, Service);
 
 OAuth2ClientService.prototype.checkSoftClient = function(client) {
-    console.log('checkSoftClient');console.log(client instanceof OAuth2Client);
+    console.log('Into OAuth2ClientService::checkSoftClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftClient',result:false});}
     var me = this;
     var ret;
@@ -48,7 +48,7 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
     me.store().select(table,fields,criteria);
 };
 OAuth2ClientService.prototype.checkClient = function(client) {
-    console.log('checkClient');
+    console.log('Into OAuth2ClientService::checkClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkClient',result:false});}
     
     var me = this;
@@ -80,7 +80,7 @@ OAuth2ClientService.prototype.checkClient = function(client) {
     //this.emit('data',{method:'checkClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
 };
 OAuth2ClientService.prototype.checkHardClient = function(client) {
-    console.log('checkHardClient');
+    console.log('Into OAuth2ClientService::checkHardClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkHardClient',result:false});}
     
     var me = this;
@@ -96,7 +96,7 @@ OAuth2ClientService.prototype.checkHardClient = function(client) {
     var ctyv = client.getClientType();
     var redv = client.getRedirectURI();
     var criteria = {};
-    criteria[cidf] = cidv;criteria[csef] = csev;criteria[ctyf] = ctyv;criteria[redf] = redv;console.log(client);
+    criteria[cidf] = cidv;criteria[csef] = csev;criteria[ctyf] = ctyv;criteria[redf] = redv;
     
         //console.log(fields);
     me.store().on('query',function(rows, fs) {
@@ -112,7 +112,7 @@ OAuth2ClientService.prototype.checkHardClient = function(client) {
     me.store().select(table, fields, criteria);
 };
 OAuth2ClientService.prototype.checkSoftHardClient = function(client) {
-    console.log('checkSoftHardClient');
+    console.log('Into OAuth2ClientService::checkSoftHardClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftHardClient',result:false});}
     
     var me = this;

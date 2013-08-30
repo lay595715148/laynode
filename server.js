@@ -1,5 +1,6 @@
 var http    = require('http');
 var express = require('express');
+var syslog = require('syslog');
 var laynode = require('./lib');
 
 //by http
@@ -40,14 +41,14 @@ app.configure(function() {
 });
 app.all('/:a/:m',function(req, res) {
     var action = req.params.a, method = req.params.m;
-    console.log(req.route);
+    console.log('Start: ', JSON.stringify(req.route));
     laynode.start(req, res, action, method);
 });
 app.all('/:a',function(req, res) {
     var action = req.params.a;
-    console.log(req.route);
+    console.log('Start: ', JSON.stringify(req.route));
     laynode.start(req, res, action);
 });
 
-app.listen(3000);console.log(process.memoryUsage());
+app.listen(3000);console.log(syslog.createClient('localhost',800));
 console.log('Server running at http://127.0.0.1:' + 3000 + '/');
