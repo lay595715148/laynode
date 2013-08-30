@@ -53,7 +53,7 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
             }
             if(refresh_token) {
                 me.emit('data',{method:'gen',result:[access_token,refresh_token]});
-                me.clean();//清除过期的
+                //me.clean();//清除过期的
             } else {
                 oauth2token.setToken(refreshToken);
                 oauth2token.setClientID(clientID);
@@ -66,7 +66,7 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
         } else {
             access_token = accessToken;
             me.emit('data',{method:'gen',result:access_token});
-            me.clean();//清除过期的
+            //me.clean();//清除过期的
         }
     }).once('error',function(err) {console.log('error in oauth2tokenservice', err);
         me.emit('error',err);

@@ -238,6 +238,25 @@ Authorize.prototype.logout = function() {
     me.template().header('Location','/');
     callParent();
 };
+Authorize.prototype.clean = function() {
+    this.service('oauth2code').on('data',function(data) {
+        if(data.method == 'clean') {
+            console.log('oauth2code clean success');
+        }
+    }).on('error',function(err) {
+        console.log('oauth2code clean failure', err);
+    });
+    this.service('oauth2token').on('data',function(data) {
+        if(data.method == 'clean') {
+            console.log('oauth2token clean success');
+        }
+    }).on('error',function(err) {
+        console.log('oauth2token clean failure', err);
+    });
+    
+    this.service('oauth2token').clean();
+    this.service('oauth2code').clean();
+}
 /**
  * must call parent method ::end() or emit event 'end'
  */

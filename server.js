@@ -33,6 +33,10 @@ app.configure(function() {
     app.use(express.cookieParser());
     app.use(express.cookieSession({ secret:'laynode',cookie: { maxAge: 60 * 60 * 1000 }}));
     app.use(express.static(__dirname + '/static'));
+    
+    /*var tmp = setInterval(function() {
+        laynode.start(null, null, 'authorize', 'clean');
+    },1000);*/
 });
 app.all('/:a/:m',function(req, res) {
     var action = req.params.a, method = req.params.m;
@@ -45,5 +49,5 @@ app.all('/:a',function(req, res) {
     laynode.start(req, res, action);
 });
 
-app.listen(3000);
+app.listen(3000);console.log(process.memoryUsage());
 console.log('Server running at http://127.0.0.1:' + 3000 + '/');

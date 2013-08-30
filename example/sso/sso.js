@@ -173,7 +173,7 @@ var sso = {
         'ShowService' : '/example/sso/classes/ShowService.js'
     },
     template_path: '/example/sso/template',
-    auth_code_lifetime : 100,
+    auth_code_lifetime : 60,
     access_token_lifetime : 1800,
     refresh_token_lifetime : 86400,
     use_refresh_token : false

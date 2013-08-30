@@ -39,7 +39,7 @@ OAuth2CodeService.prototype.gen = function(clientID, redirectURI, userID) {
     me.store().once('query', function(rows, fields) {
         console.log('query code gen', rows);
         me.emit('data',{method:'gen',result:code});
-        me.clean();//清除过期的
+        //me.clean();//清除过期的
     }).on('error', function(err) {
         me.emit('error', err);
     });
