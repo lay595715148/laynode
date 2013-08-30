@@ -56,7 +56,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
     me.service('oauth2client').on('data',function(data) {
         result = data.result;
         method = data.method;
-        if(method === 'checkSoftClient') {
+        if(method === 'checkClient') {
             client = result;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 me.template().push({'logined':true, 'username':$_SESSION['userName'], 'client_name':client.clientName});
@@ -69,7 +69,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
             headerError('invalid_client');
         }
     }).on('error',function(err) {
-        headerError(err);
+        headerError('invalid_client');
     });
 
 
@@ -77,8 +77,9 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
         oauth2client = new OAuth2Client();
         console.log('outHTML');
         oauth2client.setClientID($_GET['client_id']);
+        oauth2client.setClientType((response_type == 'token')?3:1);
         oauth2client.setRedirectURI($_GET['redirect_uri']);
-        me.service('oauth2client').checkSoftClient(oauth2client);
+        me.service('oauth2client').checkClient(oauth2client);
     } else {
         headerError('invalid_request');
     }

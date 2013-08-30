@@ -18,7 +18,10 @@ html
         p Get on it!
         
       if logined
-        div #{username},#{client_name}
+        form(action='/authorize/submit?response_type=#{response_type}&client_id=#{client_id}&redirect_uri=#{redirect_uri}', method='post')
+          div #{username},#{client_name}
+          input(type='hidden', name='logined', value='#{logined}')
+          input(type='submit', name='submit', value='submit')
       else 
         form(action='/authorize/submit?response_type=#{response_type}&client_id=#{client_id}&redirect_uri=#{redirect_uri}', method='post')
           input(type='text', name='username')

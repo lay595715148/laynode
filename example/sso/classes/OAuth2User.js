@@ -16,5 +16,17 @@ function OAuth2User() {
 
 util.inherits(OAuth2User, TBean);
 
+TBean.prototype.rowToInfoArray = function(row) {
+    var classname = this._classname;
+    var bean,arr  = {};
+
+    if('object' == typeof row) {
+        bean = this.rowToEntity.call(this,row);
+        arr  = bean.toArray.call(bean);
+        if('undefined' != typeof arr['password']) delete arr['password'];
+    }
+    return arr;
+};
+
 //module exports
 module.exports = OAuth2User;

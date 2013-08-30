@@ -48,13 +48,18 @@ OAuth2CodeService.prototype.checkCode = function(code, clientID) {
     console.log('checkCode');
     
     var me = this;
-    var cond = {};
+    var criteria = {};
     var oauth2code = new OAuth2Code();
     var table = oauth2code.toTable();
     var fields = oauth2code.toFields();
     var cof = oauth2code.toField('code');
     var cif = oauth2code.toField('clientID');
-    cond[cof] = code,cond[cif] = clientID;
+    var exf = oauth2code.toField('expires');
+    var time = Math.floor(new Date().getTime()/1000);
+    var cond = new Condition();
+    
+    cond.push(Cell.parseFilterString('expires:>' + time));
+    criteria[cof] = code,criteria[exf] = cond,criteria[cif] = clientID;
     
     me.store().on('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
@@ -65,7 +70,7 @@ OAuth2CodeService.prototype.checkCode = function(code, clientID) {
     }).on('error',function(err) {
         me.emit('error',err);
     });
-    me.store().select(table, fields, cond);
+    me.store().select(table, fields, criteria);
     
     //this.emit('data',{method:'checkCode',result:{code:code,clientID:clientID,userid:'lay'}});
 };

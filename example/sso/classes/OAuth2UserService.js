@@ -34,7 +34,7 @@ OAuth2UserService.prototype.checkUser = function(username, password) {
     //this.emit('error',{'id':1,'username':'student','password':'','group':1});
     this.store().on('query',function(rows, fields) {
         if(util.isArray(rows) && rows.length > 0) {
-            me.emit('data',{method:'checkUser', result:oauth2user.rowToArray(rows[0])});
+            me.emit('data',{method:'checkUser', result:oauth2user.rowToInfoArray(rows[0])});
         } else {
             me.emit('error', 'no correspond user');
         }
@@ -44,9 +44,27 @@ OAuth2UserService.prototype.checkUser = function(username, password) {
 
     me.store().select(table, fields, cond);
 };
-OAuth2UserService.prototype.read = function(userid) {
+OAuth2UserService.prototype.read = function(userID) {
     console.log('read');
-    this.emit('data',{method:'read', result:{'id':1, 'username':'student', 'password':'', 'group':1}});
+    var me = this;
+    var cond = {};
+    var oauth2user = new OAuth2User();
+    var table = oauth2user.toTable();
+    var fields = oauth2user.toFields();
+    var idf = oauth2user.toField('id');
+    cond[idf] = userID;
+    
+    me.store().on('query',function(rows,fs) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data',{method:'read',result:oauth2user.rowToInfoArray(rows[0])});
+        } else {
+            me.emit('error','no correspond token');
+        }
+    }).on('error',function(err) {
+        me.emit('error',err);
+    });
+    me.store().select(table, fields, cond);
+    //this.emit('data',{method:'read', result:{'id':1, 'username':'student', 'password':'', 'group':1}});
 };
 
 //module exports

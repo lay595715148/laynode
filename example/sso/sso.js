@@ -175,7 +175,7 @@ var sso = {
     auth_code_lifetime : 100,
     access_token_lifetime : 1800,
     refresh_token_lifetime : 86400,
-    use_refresh_token : true
+    use_refresh_token : false
 };
 
 //module exports

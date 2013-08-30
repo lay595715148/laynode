@@ -64,29 +64,74 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
             }
         } else {
             access_token = accessToken;
-            me.emit('data',{method:'gen',result:[access_token]});
+            me.emit('data',{method:'gen',result:access_token});
         }
     }).on('error',function(err) {console.log('error in oauth2tokenservice', err);
         me.emit('error',err);
     });
     
     me.store().insert(table, fields, values, false, false);
-    
-    /*if(refresh) {
-        this.emit('data',{method:'gen',result:[MD5.hex_md5(Util.guid()),MD5.hex_md5(Util.guid())]});
-    } else {
-        this.emit('data',{method:'gen',result:MD5.hex_md5(Util.guid())});
-    }*/
 };
-OAuth2TokenService.prototype.checkSoftToken = function(token,type) {
+OAuth2TokenService.prototype.checkSoftToken = function(token,type) {//no client id
     console.log('checkSoftToken');
     type = parseInt(type) || 1;
-    this.emit('data',{method:'checkSoftToken',result:{token:token,userid:1,type:type}});
+    //this.emit('data',{method:'checkSoftToken',result:{token:token,userid:1,type:type}});
+    
+    var me = this;
+    var criteria = {};
+    var oauth2token = new OAuth2Token();
+    var table = oauth2token.toTable();
+    var fields = oauth2token.toFields();
+    var tof = oauth2token.toField('token');
+    var cif = oauth2token.toField('clientID');
+    var tyf = oauth2token.toField('type');
+    var exf = oauth2token.toField('expires');
+    var time = Math.floor(new Date().getTime()/1000);
+    var cond = new Condition();
+    
+    cond.push(Cell.parseFilterString('expires:>' + time));
+    criteria[tof] = token,criteria[exf] = cond,criteria[tyf] = type;console.log('criteria',criteria);
+    
+    me.store().on('query',function(rows,fs) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data',{method:'checkSoftToken',result:oauth2token.rowToArray(rows[0])});
+        } else {
+            me.emit('error','no correspond token');
+        }
+    }).on('error',function(err) {
+        me.emit('error',err);
+    });
+    me.store().select(table, fields, criteria);
 };
-OAuth2TokenService.prototype.checkToken = function(token,clientid,type) {
+OAuth2TokenService.prototype.checkToken = function(token,clientID,type) {
     console.log('checkToken');
     type = parseInt(type) || 1;
-    this.emit('data',{method:'checkToken',result:{token:token,userid:1,type:type}});
+    var me = this;
+    var criteria = {};
+    var oauth2token = new OAuth2Token();
+    var table = oauth2token.toTable();
+    var fields = oauth2token.toFields();
+    var tof = oauth2token.toField('token');
+    var cif = oauth2token.toField('clientID');
+    var tyf = oauth2token.toField('type');
+    var exf = oauth2token.toField('expires');
+    var time = Math.floor(new Date().getTime()/1000);
+    var cond = new Condition();
+    
+    cond.push(Cell.parseFilterString('expires:>' + time));
+    criteria[tof] = token,criteria[cif] = clientID,criteria[exf] = cond,criteria[tyf] = type;
+    
+    me.store().on('query',function(rows,fs) {
+        if(util.isArray(rows) && rows.length > 0) {
+            me.emit('data',{method:'checkToken',result:oauth2token.rowToArray(rows[0])});
+        } else {
+            me.emit('error','no correspond token');
+        }
+    }).on('error',function(err) {
+        me.emit('error',err);
+    });
+    me.store().select(table, fields, criteria);
+    //this.emit('data',{method:'checkToken',result:{token:token,userid:1,type:type}});
 };
 
 //module exports
