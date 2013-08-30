@@ -132,6 +132,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         result = data.result;
         method = data.method;console.log(data);
         if(method === 'checkClient') {
+            console.log('client checked');
             client = result;//console.log('session',$_POST);$_SESSION['userID'] = false;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 if(response_type == 'token') {
@@ -150,26 +151,30 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
         headerError(err);
     });
     me.service('oauth2code').on('data',function(data) {
-        result = data.result;
         method = data.method;
         console.log(data);
         if(method === 'gen') {
+            console.log('code gened');
+            result = data.result;
             var code = result;
             me.template().header('Status', 302);
             me.template().header('Location:' + client['redirectURI'] + '?code=' + encodeURIComponent(code));
             callParent();
+        } else if(method === 'clean') {
+            console.log('has clean',data);
         } else {
             console.log(6);
             headerError('invalid_grant');
         }
+        console.log('continue');
     }).on('error', function(err) {
         console.log(2);
         headerError(err);
     });
     me.service('oauth2token').on('data',function(data) {
-        result = data.result;
-        method = data.method;console.log(result);
+        method = data.method;
         if(method === 'gen') {console.log('userID',$_SESSION);
+            result = data.result;
             if(conf.use_refresh_token) {
                 var token = result[0];
                 var rtoken = result[1];
@@ -189,6 +194,8 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
                 me.template().header('Location', client['redirectURI'] + '#userid=' + $_SESSION['userID'] + '&token=' + encodeURIComponent(token) + '&expires=' + conf.access_token_lifetime);
             }
             callParent();
+        } else if(method === 'clean') {
+            console.log('has clean',data);
         } else {
             console.log(5);
             headerError('invalid_token');

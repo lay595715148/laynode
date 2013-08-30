@@ -36,9 +36,10 @@ OAuth2CodeService.prototype.gen = function(clientID, redirectURI, userID) {
     var fields = oauth2code.toInsertFields();
     var values = oauth2code.toValues();
     
-    me.store().on('query', function(rows, fields) {
-        console.log(rows);
+    me.store().once('query', function(rows, fields) {
+        console.log('query code gen', rows);
         me.emit('data',{method:'gen',result:code});
+        me.clean();//清除过期的
     }).on('error', function(err) {
         me.emit('error', err);
     });
@@ -61,7 +62,7 @@ OAuth2CodeService.prototype.checkCode = function(code, clientID) {
     cond.push(Cell.parseFilterString('expires:>' + time));
     criteria[cof] = code,criteria[exf] = cond,criteria[cif] = clientID;
     
-    me.store().on('query',function(rows,fs) {
+    me.store().once('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data',{method:'checkCode',result:oauth2code.rowToArray(rows[0])});
         } else {
@@ -71,9 +72,33 @@ OAuth2CodeService.prototype.checkCode = function(code, clientID) {
         me.emit('error',err);
     });
     me.store().select(table, fields, criteria);
-    
-    //this.emit('data',{method:'checkCode',result:{code:code,clientID:clientID,userid:'lay'}});
 };
+OAuth2CodeService.prototype.clean = function() {
+    console.log('clean');
+    
+    var me = this;
+    var oauth2code = new OAuth2Code();
+    var table = oauth2code.toTable();
+    var exf = oauth2code.toField('expires');
+    var time = Math.floor(new Date().getTime()/1000);
+    var cond = new Condition();
+    
+    cond.push(Cell.parseFilterString('expires:<' + time));
+    
+    me.store().once('query',function(rows,fs) {
+        if(rows) {
+            console.log('query delete');
+            me.emit('data',{method:'clean',result:rows});
+        } else {
+            console.log('delete in error');
+            me.emit('error','no correspond code');
+        }
+    }).on('error',function(err) {
+        console.log('delete error');
+        me.emit('error',err);
+    });
+    me.store().delete(table, cond);
+}
 
 //module exports
 module.exports = OAuth2CodeService;

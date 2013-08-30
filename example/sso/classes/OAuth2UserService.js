@@ -64,7 +64,6 @@ OAuth2UserService.prototype.read = function(userID) {
         me.emit('error',err);
     });
     me.store().select(table, fields, cond);
-    //this.emit('data',{method:'read', result:{'id':1, 'username':'student', 'password':'', 'group':1}});
 };
 
 //module exports

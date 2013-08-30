@@ -83,6 +83,7 @@ var sso = {
         'mysql-sso' : {
             'auto-connect':false,
             'classname':'Mysql',
+            //see more https://github.com/felixge/node-mysql#connection-options
             'host':'localhost',
             'port':3306,
             'user':'lay',

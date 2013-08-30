@@ -44,7 +44,7 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
     var fields = oauth2token.toInsertFields();
     var values = oauth2token.toValues();
     
-    me.store().on('query',function(rows, fs) {
+    me.store().once('query',function(rows, fs) {
         if(refresh) {
             if(access_token) {
                 refresh_token = refreshToken;
@@ -53,6 +53,7 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
             }
             if(refresh_token) {
                 me.emit('data',{method:'gen',result:[access_token,refresh_token]});
+                me.clean();//清除过期的
             } else {
                 oauth2token.setToken(refreshToken);
                 oauth2token.setClientID(clientID);
@@ -65,8 +66,9 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
         } else {
             access_token = accessToken;
             me.emit('data',{method:'gen',result:access_token});
+            me.clean();//清除过期的
         }
-    }).on('error',function(err) {console.log('error in oauth2tokenservice', err);
+    }).once('error',function(err) {console.log('error in oauth2tokenservice', err);
         me.emit('error',err);
     });
     
@@ -92,13 +94,13 @@ OAuth2TokenService.prototype.checkSoftToken = function(token,type) {//no client 
     cond.push(Cell.parseFilterString('expires:>' + time));
     criteria[tof] = token,criteria[exf] = cond,criteria[tyf] = type;console.log('criteria',criteria);
     
-    me.store().on('query',function(rows,fs) {
+    me.store().once('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data',{method:'checkSoftToken',result:oauth2token.rowToArray(rows[0])});
         } else {
             me.emit('error','no correspond token');
         }
-    }).on('error',function(err) {
+    }).once('error',function(err) {
         me.emit('error',err);
     });
     me.store().select(table, fields, criteria);
@@ -121,18 +123,44 @@ OAuth2TokenService.prototype.checkToken = function(token,clientID,type) {
     cond.push(Cell.parseFilterString('expires:>' + time));
     criteria[tof] = token,criteria[cif] = clientID,criteria[exf] = cond,criteria[tyf] = type;
     
-    me.store().on('query',function(rows,fs) {
+    me.store().once('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data',{method:'checkToken',result:oauth2token.rowToArray(rows[0])});
         } else {
             me.emit('error','no correspond token');
         }
-    }).on('error',function(err) {
+    }).once('error',function(err) {
         me.emit('error',err);
     });
     me.store().select(table, fields, criteria);
     //this.emit('data',{method:'checkToken',result:{token:token,userid:1,type:type}});
 };
+OAuth2TokenService.prototype.clean = function() {
+    console.log('clean');
+    
+    var me = this;
+    var oauth2token = new OAuth2Token();
+    var table = oauth2token.toTable();
+    var exf = oauth2token.toField('expires');
+    var time = Math.floor(new Date().getTime()/1000);
+    var cond = new Condition();
+    
+    cond.push(Cell.parseFilterString('expires:<' + time));
+    
+    me.store().once('query',function(rows,fs) {
+        if(rows) {
+            console.log('query delete');
+            me.emit('data',{method:'clean',result:rows});
+        } else {
+            console.log('delete in error');
+            me.emit('error','no correspond code');
+        }
+    }).once('error',function(err) {
+        console.log('delete error');
+        me.emit('error',err);
+    });
+    me.store().delete(table, cond);
+}
 
 //module exports
 module.exports = OAuth2TokenService;
