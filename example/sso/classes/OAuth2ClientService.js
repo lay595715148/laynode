@@ -20,7 +20,7 @@ function OAuth2ClientService(serviceConfig) {
 util.inherits(OAuth2ClientService, Service);
 
 OAuth2ClientService.prototype.checkSoftClient = function(client) {
-    console.log('Into OAuth2ClientService::checkSoftClient');
+    logger.log('Into OAuth2ClientService::checkSoftClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftClient',result:false});}
     var me = this;
     var ret;
@@ -32,9 +32,9 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
     var cidv = client.getClientID();
     var redv = client.getRedirectURI();
     var criteria = {};
-    criteria[cidf] = cidv;criteria[redf] = redv;console.log(criteria);
+    criteria[cidf] = cidv;criteria[redf] = redv;logger.log(criteria);
     
-        //console.log(fields);
+        //logger.log(fields);
     me.store().on('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data',{method:'checkSoftClient',result:client.rowToArray(rows[0])});
@@ -42,13 +42,13 @@ OAuth2ClientService.prototype.checkSoftClient = function(client) {
             me.emit('error','no correspond client');
         }
     }).on('error',function(err) {
-        console.log(err);
+        logger.log(err);
         me.emit('error',err);
     });
     me.store().select(table,fields,criteria);
 };
 OAuth2ClientService.prototype.checkClient = function(client) {
-    console.log('Into OAuth2ClientService::checkClient');
+    logger.log('Into OAuth2ClientService::checkClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkClient',result:false});}
     
     var me = this;
@@ -64,7 +64,7 @@ OAuth2ClientService.prototype.checkClient = function(client) {
     var criteria = {};
     criteria[cidf] = cidv;criteria[ctyf] = ctyv;criteria[redf] = redv;
     
-        //console.log(fields);
+        //logger.log(fields);
     me.store().on('query',function(rows, fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data', {method:'checkClient',result:client.rowToArray(rows[0])});
@@ -72,7 +72,7 @@ OAuth2ClientService.prototype.checkClient = function(client) {
             me.emit('error', 'no correspond client');
         }
     }).on('error', function(err) {
-        console.log(err);
+        logger.log(err);
         me.emit('error', err);
     });
     me.store().select(table, fields, criteria);
@@ -80,7 +80,7 @@ OAuth2ClientService.prototype.checkClient = function(client) {
     //this.emit('data',{method:'checkClient',result:{'clientID':'lay_sso_person','clientName':'lay_sso_person','clientType':1,'redirectURI':'/person'}});
 };
 OAuth2ClientService.prototype.checkHardClient = function(client) {
-    console.log('Into OAuth2ClientService::checkHardClient');
+    logger.log('Into OAuth2ClientService::checkHardClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkHardClient',result:false});}
     
     var me = this;
@@ -98,7 +98,7 @@ OAuth2ClientService.prototype.checkHardClient = function(client) {
     var criteria = {};
     criteria[cidf] = cidv;criteria[csef] = csev;criteria[ctyf] = ctyv;criteria[redf] = redv;
     
-        //console.log(fields);
+        //logger.log(fields);
     me.store().on('query',function(rows, fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data', {method:'checkHardClient', result:client.rowToArray(rows[0])});
@@ -106,13 +106,13 @@ OAuth2ClientService.prototype.checkHardClient = function(client) {
             me.emit('error', 'no correspond client');
         }
     }).on('error',function(err) {
-        console.log(err);
+        logger.log(err);
         me.emit('error',err);
     });
     me.store().select(table, fields, criteria);
 };
 OAuth2ClientService.prototype.checkSoftHardClient = function(client) {
-    console.log('Into OAuth2ClientService::checkSoftHardClient');
+    logger.log('Into OAuth2ClientService::checkSoftHardClient');
     if(!(client instanceof OAuth2Client)) { this.emit('error',{method:'checkSoftHardClient',result:false});}
     
     var me = this;
@@ -126,9 +126,9 @@ OAuth2ClientService.prototype.checkSoftHardClient = function(client) {
     var csev = client.getClientSecret();
     var redv = client.getRedirectURI();
     var criteria = {};
-    criteria[cidf] = cidv;criteria[csef] = csev;criteria[redf] = redv;console.log(criteria);
+    criteria[cidf] = cidv;criteria[csef] = csev;criteria[redf] = redv;logger.log(criteria);
     
-        //console.log(fields);
+        //logger.log(fields);
     me.store().on('query',function(rows, fs) {
         if(util.isArray(rows) && rows.length > 0) {
             me.emit('data', {method:'checkSoftHardClient', result:client.rowToArray(rows[0])});
@@ -136,7 +136,7 @@ OAuth2ClientService.prototype.checkSoftHardClient = function(client) {
             me.emit('error', 'no correspond client');
         }
     }).on('error',function(err) {
-        console.log(err);
+        logger.log(err);
         me.emit('error',err);
     });
     me.store().select(table, fields, criteria);

@@ -24,13 +24,13 @@ Show.prototype.launch = function() {
     var token,tokenobj,user;
     var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
     var callParent = function() { me.emit('launch'); };
-    //console.log(req.cookies);
+    //logger.log(req.cookies);
     //res.clearCookie('test');
-    //console.log(req.cookies);
-    console.log(me.service('show'));
+    //logger.log(req.cookies);
+    logger.log(me.service('show'));
     me.service('show').on('data',function(data) {
         result = data.result;
-        method = data.method;console.log(data);
+        method = data.method;logger.log(data);
         if(method === 'find') {
             me.template().push('result',result);
         }

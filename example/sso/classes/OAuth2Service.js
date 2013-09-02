@@ -69,7 +69,7 @@ OAuth2Service.prototype.checkRequest = function($_GET, $_POST, $_REQUEST, reques
     
     request_type = request_type || OAuth2Service.REQUEST_TYPE_CODE;
     
-    console.log(request_type);
+    logger.log(request_type);
     
     switch(request_type) {
         case OAuth2Service.REQUEST_TYPE_CODE:

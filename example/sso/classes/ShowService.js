@@ -24,7 +24,7 @@ ShowService.prototype.find = function(req) {
     var store = me.store();
     
     store.on('find',function(result) {
-        console.log();
+        logger.log();
         me.emit('data',{method:'find',result:result});
     }).on('error',function(err) {
         me.emit('error',{method:'find',result:false});

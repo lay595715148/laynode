@@ -20,7 +20,7 @@ function OAuth2UserService(serviceConfig) {
 util.inherits(OAuth2UserService, Service);
 
 OAuth2UserService.prototype.checkUser = function(username, password) {
-    console.log('checkUser');
+    logger.log('checkUser');
     var oauth2user = new OAuth2User();
 
     var me = this;
@@ -45,7 +45,7 @@ OAuth2UserService.prototype.checkUser = function(username, password) {
     me.store().select(table, fields, cond);
 };
 OAuth2UserService.prototype.read = function(userID) {
-    console.log('read');
+    logger.log('read');
     var me = this;
     var cond = {};
     var oauth2user = new OAuth2User();

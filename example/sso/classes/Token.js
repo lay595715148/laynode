@@ -70,7 +70,7 @@ Token.prototype.launch = function() {
     });
     me.service('oauth2code').on('data',function(data) {
         result = data.result;
-        method = data.method;console.log('after check code',result,client);
+        method = data.method;logger.log('after check code',result,client);
         if(method === 'checkCode') {
             codeobj = result;
             userid = codeobj['userid'];
@@ -114,7 +114,7 @@ Token.prototype.launch = function() {
     });
     
     if(outHTML) {
-        oauth2client = new OAuth2Client();console.log();
+        oauth2client = new OAuth2Client();logger.log();
         oauth2client.setClientID($_REQUEST['client_id']);
         oauth2client.setClientSecret($_REQUEST['client_secret']);
         oauth2client.setRedirectURI($_REQUEST['redirect_uri']);
@@ -139,7 +139,7 @@ Token.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
     var parser     = url.parse(req.url, true);
-    var callParent = function() { console.log('emit','end');me.emit('end'); };
+    var callParent = function() { logger.log('emit','end');me.emit('end'); };
 
     me.template().json();
     callParent();

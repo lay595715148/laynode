@@ -1,6 +1,6 @@
 var http    = require('http');
 var express = require('express');
-var syslog = require('syslog');
+var fs      = require('fs');
 var laynode = require('./lib');
 
 //by http
@@ -11,7 +11,7 @@ server.listen(port);
 server.on('request',function(req, res) {
     laynode.start(req, res);
 });
-console.log('Server running at http://127.0.0.1:' + port + '/');*/
+logger.log('Server running at http://127.0.0.1:' + port + '/');*/
 
 //by express
 var app = express();
@@ -28,7 +28,8 @@ app.configure(function() {
     app.use("/js", express.static(__dirname + '/static/js'));
     app.use("/image", express.static(__dirname + '/static/image'));
 
-    app.use(express.logger());
+    app.use(express.logger({stream: fs.createWriteStream(__dirname + '/logs/express.log', {flags: 'a'})}));
+    //app.use(app.router);
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
@@ -41,14 +42,14 @@ app.configure(function() {
 });
 app.all('/:a/:m',function(req, res) {
     var action = req.params.a, method = req.params.m;
-    console.log('Start: ', JSON.stringify(req.route));
+    logger.log('Start: ', JSON.stringify(req.route));
     laynode.start(req, res, action, method);
 });
 app.all('/:a',function(req, res) {
     var action = req.params.a;
-    console.log('Start: ', JSON.stringify(req.route));
+    logger.log('Start: ', JSON.stringify(req.route));
     laynode.start(req, res, action);
 });
 
-app.listen(3000);console.log(syslog.createClient('localhost',800));
-console.log('Server running at http://127.0.0.1:' + 3000 + '/');
+app.listen(3000);
+logger.log('Server running at http://127.0.0.1:' + 3000 + '/');

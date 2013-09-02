@@ -23,7 +23,7 @@ util.inherits(OAuth2TokenService, Service);
 
 OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
     refresh = refresh || false;
-    console.log('gen token', refresh);
+    logger.log('gen token', refresh);
     var me = this;
     var access_token = false;
     var refresh_token = false;
@@ -60,7 +60,7 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
                 oauth2token.setType(2);
                 oauth2token.setUserid(userID);
                 oauth2token.setExpires(refreshExpires);
-                values = oauth2token.toValues();console.log('in oauth2tokenservice');
+                values = oauth2token.toValues();logger.log('in oauth2tokenservice');
                 me.store().insert(table, fields, values, false, false);
             }
         } else {
@@ -68,14 +68,14 @@ OAuth2TokenService.prototype.gen = function(clientID, userID, refresh) {
             me.emit('data',{method:'gen',result:access_token});
             //me.clean();//清除过期的
         }
-    }).once('error',function(err) {console.log('error in oauth2tokenservice', err);
+    }).once('error',function(err) {logger.log('error in oauth2tokenservice', err);
         me.emit('error',err);
     });
     
     me.store().insert(table, fields, values, false, false);
 };
 OAuth2TokenService.prototype.checkSoftToken = function(token,type) {//no client id
-    console.log('checkSoftToken');
+    logger.log('checkSoftToken');
     type = parseInt(type) || 1;
     //this.emit('data',{method:'checkSoftToken',result:{token:token,userid:1,type:type}});
     
@@ -92,7 +92,7 @@ OAuth2TokenService.prototype.checkSoftToken = function(token,type) {//no client 
     var cond = new Condition();
     
     cond.push(Cell.parseFilterString('expires:>' + time));
-    criteria[tof] = token,criteria[exf] = cond,criteria[tyf] = type;console.log('criteria',criteria);
+    criteria[tof] = token,criteria[exf] = cond,criteria[tyf] = type;logger.log('criteria',criteria);
     
     me.store().once('query',function(rows,fs) {
         if(util.isArray(rows) && rows.length > 0) {
@@ -106,7 +106,7 @@ OAuth2TokenService.prototype.checkSoftToken = function(token,type) {//no client 
     me.store().select(table, fields, criteria);
 };
 OAuth2TokenService.prototype.checkToken = function(token,clientID,type) {
-    console.log('checkToken');
+    logger.log('checkToken');
     type = parseInt(type) || 1;
     var me = this;
     var criteria = {};
@@ -136,7 +136,7 @@ OAuth2TokenService.prototype.checkToken = function(token,clientID,type) {
     //this.emit('data',{method:'checkToken',result:{token:token,userid:1,type:type}});
 };
 OAuth2TokenService.prototype.clean = function() {
-    console.log('clean');
+    logger.log('clean');
     
     var me = this;
     var oauth2token = new OAuth2Token();
@@ -149,14 +149,14 @@ OAuth2TokenService.prototype.clean = function() {
     
     me.store().once('query',function(rows,fs) {
         if(rows) {
-            console.log('query delete');
+            logger.log('query delete');
             me.emit('data',{method:'clean',result:rows});
         } else {
-            console.log('delete in error');
+            logger.log('delete in error');
             me.emit('error','no correspond code');
         }
     }).once('error',function(err) {
-        console.log('delete error');
+        logger.log('delete error');
         me.emit('error',err);
     });
     me.store().delete(table, cond);

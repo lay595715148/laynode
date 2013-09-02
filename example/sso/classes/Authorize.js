@@ -5,6 +5,7 @@ var fs     = require('fs');
 
 var rootpath     = global._laynode_rootpath;
 var basepath     = global._laynode_basepath;
+//var logger       = global._laynode_logger;
 
 var Action       = require(basepath + '/core/Action.js');
 var Util         = require(basepath + '/util/Util.js');
@@ -38,7 +39,7 @@ Authorize.prototype.init = function() {
  * 
  * All of this has no returns,you need push result into {this.template} that is an object of Template.
  */
-Authorize.prototype.launch = function() {console.log('Authorize launch');
+Authorize.prototype.launch = function() {logger.log('Authorize launch');
     var me        = this;
     var req       = this.request;
     var res       = this.response;
@@ -47,7 +48,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
     var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
     var response_type = $_REQUEST['response_type'] || 'code';
     var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST);
-    var callParent = function() { console.log('emit','launch');me.emit('launch'); };
+    var callParent = function() { logger.log('emit','launch');me.emit('launch'); };
     var headerError = function(err) {//if header error,this has called parent
         me.template().error(err);
         callParent();
@@ -75,7 +76,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
 
     if(outHTML) {
         oauth2client = new OAuth2Client();
-        console.log('outHTML');
+        logger.log('outHTML');
         oauth2client.setClientID($_GET['client_id']);
         oauth2client.setClientType((response_type == 'token')?3:1);
         oauth2client.setRedirectURI($_GET['redirect_uri']);
@@ -87,7 +88,7 @@ Authorize.prototype.launch = function() {console.log('Authorize launch');
 /**
  * like this which is dispathed from method ::dispatch(),you need call parent method ::launch() or emit event 'launch'.
  */
-Authorize.prototype.submit = function() {console.log('Authorize submit');
+Authorize.prototype.submit = function() {logger.log('Authorize submit');
     var me        = this;
     var req       = this.request;
     var res       = this.response;
@@ -96,7 +97,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
     var response_type = $_REQUEST['response_type'] || 'code';
     var outHTML = me.service('oauth2').checkRequest($_GET, $_POST, $_REQUEST);
-    var callParent = function() { console.log('emit','launch');me.emit('launch'); };
+    var callParent = function() { logger.log('emit','launch');me.emit('launch'); };
     var headerError = function(err) {//if header error,this has called parent
         me.template().error(err);
         callParent();
@@ -121,7 +122,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             headerError('invalid_user');
         }
     }).on('error', function(err) {
-        console.log(err);
+        logger.log(err);
         
         me.template().push({'pageTitle':'Authorize', 'response_type':response_type, 'client_id':client.clientID, 'redirect_uri':client.redirectURI});
         me.template().css('login.css');
@@ -130,10 +131,10 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
     });
     me.service('oauth2client').on('data',function(data) {
         result = data.result;
-        method = data.method;console.log(data);
+        method = data.method;logger.log(data);
         if(method === 'checkClient') {
-            console.log('client checked');
-            client = result;//console.log('session',$_POST);$_SESSION['userID'] = false;
+            logger.log('client checked');
+            client = result;//logger.log('session',$_POST);$_SESSION['userID'] = false;
             if($_SESSION['userID'] && $_SESSION['userName']) {
                 if(response_type == 'token') {
                     me.service('oauth2token').gen(client.clientID, $_SESSION['userID'], conf.use_refresh_token);
@@ -147,33 +148,33 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             headerError('invalid_client');
         }
     }).on('error', function(err) {
-        console.log(1);
+        logger.log(1);
         headerError(err);
     });
     me.service('oauth2code').on('data',function(data) {
         method = data.method;
-        console.log(data);
+        logger.log(data);
         if(method === 'gen') {
-            console.log('code gened');
+            logger.log('code gened');
             result = data.result;
             var code = result;
             me.template().header('Status', 302);
             me.template().header('Location:' + client['redirectURI'] + '?code=' + encodeURIComponent(code));
             callParent();
         } else if(method === 'clean') {
-            console.log('has clean',data);
+            logger.log('has clean',data);
         } else {
-            console.log(6);
+            logger.log(6);
             headerError('invalid_grant');
         }
-        console.log('continue');
+        logger.log('continue');
     }).on('error', function(err) {
-        console.log(2);
+        logger.log(2);
         headerError(err);
     });
     me.service('oauth2token').on('data',function(data) {
         method = data.method;
-        if(method === 'gen') {console.log('userID',$_SESSION);
+        if(method === 'gen') {logger.log('userID',$_SESSION);
             result = data.result;
             if(conf.use_refresh_token) {
                 var token = result[0];
@@ -195,13 +196,13 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             }
             callParent();
         } else if(method === 'clean') {
-            console.log('has clean',data);
+            logger.log('has clean',data);
         } else {
-            console.log(5);
+            logger.log(5);
             headerError('invalid_token');
         }
     }).on('error', function(err) {
-        console.log(3);
+        logger.log(3);
         headerError(err);
     });
     
@@ -221,7 +222,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
             outHTML = me.service('oauth2client').checkClient(oauth2client);
         }
     } else {
-        console.log(4);
+        logger.log(4);
         headerError('invalid_request');
     }
     
@@ -229,7 +230,7 @@ Authorize.prototype.submit = function() {console.log('Authorize submit');
 Authorize.prototype.logout = function() {
     var me         = this;
     var $_SESSION  = this.scope().session();
-    var callParent = function() { console.log('emit','launch');me.emit('launch'); };
+    var callParent = function() { logger.log('emit','launch');me.emit('launch'); };
     delete $_SESSION['userID'];
     delete $_SESSION['userName'];
     delete $_SESSION['userGroup'];
@@ -241,17 +242,17 @@ Authorize.prototype.logout = function() {
 Authorize.prototype.clean = function() {
     this.service('oauth2code').on('data',function(data) {
         if(data.method == 'clean') {
-            console.log('oauth2code clean success');
+            logger.log('oauth2code clean success');
         }
     }).on('error',function(err) {
-        console.log('oauth2code clean failure', err);
+        logger.log('oauth2code clean failure', err);
     });
     this.service('oauth2token').on('data',function(data) {
         if(data.method == 'clean') {
-            console.log('oauth2token clean success');
+            logger.log('oauth2token clean success');
         }
     }).on('error',function(err) {
-        console.log('oauth2token clean failure', err);
+        logger.log('oauth2token clean failure', err);
     });
     
     this.service('oauth2token').clean();
@@ -264,7 +265,7 @@ Authorize.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
     var me         = this;
-    var callParent = function() { console.log('emit','end');me.emit('end'); };
+    var callParent = function() { logger.log('emit','end');me.emit('end'); };
     
     this.template().display();
     callParent();

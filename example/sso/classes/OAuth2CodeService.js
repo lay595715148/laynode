@@ -21,7 +21,7 @@ function OAuth2CodeService(serviceConfig) {
 util.inherits(OAuth2CodeService, Service);
 
 OAuth2CodeService.prototype.gen = function(clientID, redirectURI, userID) {
-    console.log('gen code');
+    logger.log('gen code');
     var me = this;
     var code = MD5.hex_md5(Util.guid());
     var oauth2code = new OAuth2Code();
@@ -37,7 +37,7 @@ OAuth2CodeService.prototype.gen = function(clientID, redirectURI, userID) {
     var values = oauth2code.toValues();
     
     me.store().once('query', function(rows, fields) {
-        console.log('query code gen', rows);
+        logger.log('query code gen', rows);
         me.emit('data',{method:'gen',result:code});
         //me.clean();//清除过期的
     }).on('error', function(err) {
@@ -46,7 +46,7 @@ OAuth2CodeService.prototype.gen = function(clientID, redirectURI, userID) {
     me.store().insert(table, fields, values, false, false);
 };
 OAuth2CodeService.prototype.checkCode = function(code, clientID) {
-    console.log('checkCode');
+    logger.log('checkCode');
     
     var me = this;
     var criteria = {};
@@ -74,7 +74,7 @@ OAuth2CodeService.prototype.checkCode = function(code, clientID) {
     me.store().select(table, fields, criteria);
 };
 OAuth2CodeService.prototype.clean = function() {
-    console.log('clean');
+    logger.log('clean');
     
     var me = this;
     var oauth2code = new OAuth2Code();
@@ -87,14 +87,14 @@ OAuth2CodeService.prototype.clean = function() {
     
     me.store().once('query',function(rows,fs) {
         if(rows) {
-            console.log('query delete');
+            logger.log('query delete');
             me.emit('data',{method:'clean',result:rows});
         } else {
-            console.log('delete in error');
+            logger.log('delete in error');
             me.emit('error','no correspond code');
         }
     }).on('error',function(err) {
-        console.log('delete error');
+        logger.log('delete error');
         me.emit('error',err);
     });
     me.store().delete(table, cond);
