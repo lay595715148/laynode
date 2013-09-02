@@ -1,8 +1,6 @@
 var util   = require('util');
 var url    = require('url');
 
-var basepath = global._laynode_basepath;
-var rootpath = global._laynode_rootpath;
 var Action   = require(basepath + '/core/Action.js');
 var Util     = require(basepath + '/util/Util.js');
 var conf     = require('../sso.js');

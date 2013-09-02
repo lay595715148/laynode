@@ -3,16 +3,6 @@ var express = require('express');
 var fs      = require('fs');
 var laynode = require('./lib');
 
-//by http
-/*var port    = 1337;
-var server  = http.createServer();
-
-server.listen(port);
-server.on('request',function(req, res) {
-    laynode.start(req, res);
-});
-logger.log('Server running at http://127.0.0.1:' + port + '/');*/
-
 //by express
 var app = express();
 app.configure(function() {

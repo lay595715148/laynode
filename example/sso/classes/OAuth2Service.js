@@ -2,8 +2,6 @@ var util      = require('util');
 var url       = require('url');
 var jade      = require('jade');
 
-var basepath  = global._laynode_basepath;
-var rootpath  = global._laynode_rootpath;
 var Service   = require(basepath + '/core/Service.js');
 var Condition = require(basepath + '/util/Condition.js');
 var Cell      = require(basepath + '/util/Cell.js');

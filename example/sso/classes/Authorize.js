@@ -3,10 +3,6 @@ var url    = require('url');
 var jade   = require('jade');
 var fs     = require('fs');
 
-var rootpath     = global._laynode_rootpath;
-var basepath     = global._laynode_basepath;
-//var logger       = global._laynode_logger;
-
 var Action       = require(basepath + '/core/Action.js');
 var Util         = require(basepath + '/util/Util.js');
 var User         = require('./User.js');
