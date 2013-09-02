@@ -11,6 +11,7 @@ app.configure(function() {
     laynode.config({sso:'/example/sso/sso.js'});
     laynode.config({em:'/example/em/em.js'});
     laynode.initialize();
+    //console.log(_laynode_config);
 
     app.set('views', __dirname + '/template');
     app.set('view engine', 'jade');
@@ -32,12 +33,12 @@ app.configure(function() {
 });
 app.all('/:a/:m',function(req, res) {
     var action = req.params.a, method = req.params.m;
-    logger.log('Start: ', JSON.stringify(req.route));
+    logger.log('Start:', JSON.stringify(req.route));
     laynode.start(req, res, action, method);
 });
 app.all('/:a',function(req, res) {
     var action = req.params.a;
-    logger.log('Start: ', JSON.stringify(req.route));
+    logger.log('Start:', JSON.stringify(req.route));
     laynode.start(req, res, action);
 });
 
