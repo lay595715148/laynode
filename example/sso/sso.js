@@ -51,7 +51,7 @@ var sso = {
         'show' : {
             'auto-init':true,
             'classname':'ShowService',
-            'store':'mongo-sso'
+            'store':'mongodb-sso'
         },
         'oauth2' : {
             'auto-init':true,
@@ -92,7 +92,19 @@ var sso = {
             'encoding':'UTF8',
             'show-sql':true
         },
-        'mongo-sso' : {
+        'mongojs-sso' : {
+            'auto-connect':false,
+            'classname':'MongoJS',
+            //see more https://github.com/felixge/node-mysql#connection-options
+            'host':'localhost',
+            'port':3306,
+            'user':'lay',
+            'password':'123456',
+            'database':'laysoft',
+            'encoding':'UTF8',
+            'show-sql':true
+        },
+        'mongodb-sso' : {
             'auto-connect':false,
             'classname':'MongoDB',
             //'host':'192.168.159.81',

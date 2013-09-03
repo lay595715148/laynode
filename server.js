@@ -27,9 +27,11 @@ app.configure(function() {
     app.use(express.cookieSession({ secret:'laynode',cookie: { maxAge: 60 * 60 * 1000 }}));
     app.use(express.static(__dirname + '/static'));
     
-    /*var tmp = setInterval(function() {
+    var tmp = setInterval(function() {
         laynode.start(null, null, 'authorize', 'clean');
-    },1000);*/
+    },60000);/**/
+    
+    
 });
 app.all('/:a/:m',function(req, res) {
     var action = req.params.a, method = req.params.m;

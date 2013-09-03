@@ -21,7 +21,7 @@ Show.prototype.launch = function() {
     var parser = url.parse(req.url, true);
     var token,tokenobj,user;
     var $_GET = me.scope().get(), $_POST = me.scope().post(), $_REQUEST = me.scope().request(), $_SESSION = me.scope().session();
-    var callParent = function() { me.emit('launch'); };
+    var callParent = function() { Action.prototype.launch.call(me); };
     //logger.log(req.cookies);
     //res.clearCookie('test');
     //logger.log(req.cookies);
@@ -45,7 +45,7 @@ Show.prototype.end = function() {
     var req        = this.request;
     var res        = this.response;
     var parser     = url.parse(req.url, true);
-    var callParent = function() { me.emit('end'); };
+    var callParent = function() { Action.prototype.end.call(me); };
 
     me.template().json();
     callParent();
